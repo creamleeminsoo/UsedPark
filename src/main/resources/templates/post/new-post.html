@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>새 게시물 작성</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #FFFAFA;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #343a40;
+        }
+        .form-control {
+            border-radius: 10px;
+            font-size: 1rem;
+            padding: 10px;
+        }
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #FFC0CB;
+            color: white;
+            border-radius: 25px;
+            font-size: 1rem;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 10px;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .custom-file-upload:hover {
+            background-color: #FFB6C1;
+        }
+        .image-upload {
+            display: flex;
+            justify-content: space-between;
+        }
+        .image-upload input[type="file"] {
+            display: none;
+        }
+        .image-preview {
+            margin-top: 10px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .btn {
+            font-size: 1.2rem;
+            padding: 10px 30px;
+            border-radius: 25px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/util.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1 class="mb-4 font-weight-bold" th:if="${post.id == null}">새 게시물 작성</h1>
+    <h1 class="mb-4 font-weight-bold" th:if="${post.id != null}">게시물 수정</h1>
+
+    <div class="form-group">
+        <label for="title" class="form-label">제목</label>
+        <input type="text" id="title" class="form-control" th:value="${post.title}" placeholder="제목을 입력하세요">
+    </div>
+
+    <div class="form-group">
+        <label for="content" class="form-label">내용</label>
+        <textarea id="content" class="form-control" rows="8" placeholder="내용을 입력하세요" th:text="${post.content}"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">이미지 업로드 (최대 3개)</label>
+        <div class="image-upload">
+            <div>
+                <label class="custom-file-upload">
+                    이미지 업로드 1
+                    <input type="file" id="image1" name="image1" accept="image/*" onchange="previewImage(event, 'preview1')">
+                </label>
+                <img id="preview1" class="image-preview">
+            </div>
+            <div>
+                <label class="custom-file-upload">
+                    이미지 업로드 2
+                    <input type="file" id="image2" name="image2" accept="image/*" onchange="previewImage(event, 'preview2')">
+                </label>
+                <img id="preview2" class="image-preview">
+            </div>
+            <div>
+                <label class="custom-file-upload">
+                    이미지 업로드 3
+                    <input type="file" id="image3" name="image3" accept="image/*" onchange="previewImage(event, 'preview3')">
+                </label>
+                <img id="preview3" class="image-preview">
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="postId" th:value="${post.id}">
+    <input type="hidden" id="boardId" th:value="${boardId}">
+
+
+    <div class="btn-container">
+        <button type="button" id="submitBtn"
+                th:if="${post.id == null}"
+                class="btn btn-primary">등록</button>
+        <button type="button" id="updateBtn"
+                th:if="${post.id != null}"
+                class="btn btn-warning">수정</button>
+    </div>
+</div>
+
+<script>
+    function previewImage(event, previewId) {
+        const input = event.target;
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const preview = document.getElementById(previewId);
+            preview.src = reader.result;
+        };
+
+        if (input.files[0]) {
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(document).ready(function() {
+        $('#submitBtn').click(function() {
+            const boardId = $('#boardId').val();
+            const title = $('#title').val();
+            const content = $('#content').val();
+
+            let formData = new FormData();
+            formData.append('post', new Blob([JSON.stringify({ title, content, boardId })], { type: 'application/json' }));
+
+            ['image1', 'image2', 'image3'].forEach(id => {
+                const file = $(`#${id}`)[0].files[0];
+                if (file) formData.append('images', file);
+            });
+
+            function success() {
+                alert('등록 완료되었습니다.');
+                location.replace(`/board/${boardId}`);
+            }
+
+            function fail() {
+                alert('등록 실패했습니다.');
+                location.replace(`/board/${boardId}`);
+            }
+
+            httpRequest('POST', `/api/posts?boardId=${boardId}`, formData, success, fail);
+        });
+
+        $('#updateBtn').click(function() {
+            const boardId = $('#boardId').val();
+            const title = $('#title').val();
+            const content = $('#content').val();
+            const postId = $('#postId').val();
+
+            let formData = new FormData();
+            formData.append('post', new Blob([JSON.stringify({ title, content, boardId })], { type: 'application/json' }));
+
+            ['image1', 'image2', 'image3'].forEach(id => {
+                const file = $(`#${id}`)[0].files[0];
+                if (file) formData.append('images', file);
+            });
+
+            function success() {
+                alert('수정 완료되었습니다.');
+                location.replace(`/board/${boardId}`);
+            }
+
+            function fail() {
+                alert('수정 실패했습니다.');
+                location.replace(`/board/${boardId}`);
+            }
+
+            httpRequest('PUT', `/api/posts/${postId}`, formData, success, fail);
+        });
+    });
+</script>
+</body>
+</html>

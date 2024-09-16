@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 상세 보기</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #B8C6F6;
+            padding: 15px;
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .card-main, .card-details {
+            width: 100%;
+            max-width: 2000px;
+            margin: 15px auto;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            margin-top: 40px;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 500px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            object-fit: contain;
+        }
+
+        .card-body-main {
+            padding: 20px;
+            background-color: #ffffff;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .card-title-main {
+            font-size: 45px;
+            font-weight: bold;
+            color: #343a40;
+            margin-top: 100px;
+        }
+
+        .card-text-main {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .card-details {
+            margin-top: 40px;
+        }
+
+        .card-details-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 15px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card-details-text {
+            color: #6c757d;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary, .btn-chat {
+            border-radius: 20px;
+            padding: 15px;
+            font-size: 18px;
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .btn-chat {
+            background-color: #FFD0E9;
+            border-color: #FFD0E9;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+        }
+
+        .btn-chat:hover {
+            background-color: #d63384;
+            border-color: #c8235c;
+        }
+
+        .go-back {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .col-main, .col-details {
+            width: 100%;
+            max-width: 1500px;
+        }
+
+        .col-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+    <script src="/js/util.js"></script>
+</head>
+<body>
+<input type="hidden" id="itemId" th:value="${item.id}">
+<nav class="navbar">
+    <span class="navbar-brand mb-0">유즈드 파크</span>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-main">
+            <div class="card card-main">
+                <div class="card-img-wrapper">
+                    <img th:each="image : ${item.images}"
+                         th:src="@{'/ItemImage/' + ${image.filename}}"
+                         alt="상품 사진" class="card-img-top">
+                </div>
+                <div class="card-body card-body-main">
+                    <h4 class="card-title card-title-main" th:text="${item.title}"></h4>
+                    <p class="card-text card-text-main" th:text="${item.content}"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-details">
+            <div class="card">
+                <h5 class="card-details-title card-details">상세 정보</h5>
+                <p class="card-details-text" th:text="'판매자: ' + ${item.user.nickname}"></p>
+                <p class="card-details-text" th:text="'가격: ' + ${item.price}"></p>
+                <p class="card-details-text" th:text="'브랜드: ' + ${item.brand}"></p>
+                <p id="cartCount" class="card-details-text" th:text="'장바구니: ' + ${item.cartCount}"></p>
+                <p class="card-details-text" th:text="'카테고리: ' + ${item.category.name}"></p>
+                <h5 class="card-details-title">지역</h5>
+                <p class="card-details-text" th:each="address : ${item.addresses}" th:text="${address.name} + ' '"></p>
+            </div>
+            <div class="col-buttons">
+                <button type="button" class="btn btn-primary">구매하기</button>
+                <button type="button" id="addCartBtn" style="background-color:#B8C6F6; color: black;" class="btn btn-primary">찜하기</button>
+                <button type="button" class="btn btn-chat">판매자와 채팅하기</button>
+            </div>
+        </div>
+    </div>
+    <div class="go-back">
+        <a href="/items" class="btn btn-outline-secondary">목록으로 돌아가기</a>
+    </div>
+    <div>
+        <a id="delete" class="btn btn-outline-danger">상품삭제</a>
+        <a th:href="@{/new-item(itemId=${item.id})}" class="btn btn-outline-danger">상품수정</a>
+    </div>
+    <script>
+        document.querySelector('#delete').addEventListener('click', event => {
+            var itemId = document.querySelector('#itemId').value;
+            if (confirm('상품을 삭제하시겠습니까?')) {
+                            function success() {
+                                alert('삭제가 완료되었습니다.');
+                                location.replace(`/items`);
+                            }
+                            function fail() {
+                                alert('삭제 실패했습니다.');
+                                location.replace(`/items`);
+                            }
+                        }
+                        httpRequest('DELETE', `/api/items/${itemId}`,null,success,fail);
+        });
+
+
+        document.querySelector('#addCartBtn').addEventListener('click', event => {
+            var itemId = document.querySelector('#itemId').value;
+
+            function success(data) {
+                alert('성공');
+                document.querySelector('#cartCount').innerText = `장바구니: ${data.cartCount}`;
+            }
+
+            function fail() {
+                alert('실패');
+            }
+
+            httpRequestWithAuth('POST', `/api/item/${itemId}/cart`, null, success, fail);
+        });
+
+    </script>
+</div>
+
+</body>
+</html>

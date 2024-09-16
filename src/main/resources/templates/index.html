@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 판매</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: white;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .navbar-brand {
+            color: gray;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            margin-left: auto;
+        }
+
+        .navbar-nav .nav-link {
+            margin-left: 10px;
+            color: gray;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #0056b3;
+        }
+
+        .sidebar {
+            background-color: #ffffff;
+            border-right: 1px solid #ddd;
+            padding: 15px;
+            position: fixed;
+            height: 100%;
+            width: 200px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: black;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+
+        .card {
+            margin: 15px;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 150px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 15px;
+            background-color: #ffffff;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .card-text {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .btn-outline-danger {
+            border-radius: 20px;
+            padding: 10px 20px;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .popular-card {
+            background-color: white;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: row;
+            max-width: 1300px;
+            height: 130px;
+        }
+
+        .popular-card-body {
+            padding: 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popular-card-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .popular-card-text {
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .popular-card a {
+            margin-top: auto;
+            align-self: flex-start;
+        }
+        .post-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #343a40;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script src="/js/token.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/js/logout.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <span class="navbar-brand mb-0">유즈드 파크</span>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item" id="loginSection" style="display: none;">
+                <a class="nav-link" href="/login">로그인</a>
+            </li>
+            <li class="nav-item" id="logoutSection" style="display: none;">
+                <span id="userNickname"></span>
+                <a class="nav-link" href="#" onclick="logout()">로그아웃</a>
+            </li>
+        </ul>
+
+        <script>
+            const accessToken = localStorage.getItem('access_token');
+
+            if (accessToken) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('logoutSection').style.display = 'block';
+            } else {
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('logoutSection').style.display = 'none';
+            }
+
+        </script>
+    </div>
+</nav>
+
+<div class="sidebar">
+    <a href="/items">상품 보러가기</a>
+    <a th:onclick="|location.href='@{/new-item}'|">상품 등록</a>
+    <div th:each="board : ${boards}">
+        <a th:href="@{/board/{id}(id=${board.id})}" th:text="${board.name}"></a>
+    </div>
+    <a onclick="handleMyPageRequest();">마이 페이지</a>
+    <a onclick="handleAdminPageRequest();">관리자 페이지</a>
+</div>
+<script>
+    function handleAdminPageRequest() {
+    httpGetRequest('GET', '/admin', success, fail);
+}
+function handleMyPageRequest() {
+    httpGetRequest('GET', '/mypage', success, fail);
+}
+</script>
+
+<div class="content">
+    <h4 style="font-weight: bold;">최근 올라온 상품</h4>
+    <div class="row mt-4">
+        <div class="col-md-4" th:each="item : ${items}">
+            <div class="card">
+                <img th:if="${item.image != null}"
+                     th:src="@{'/ItemImage/' + ${item.image.filename}}"
+                     alt="상품 사진" class="card-img-top">
+                <img th:if="${item.image == null}"
+                     src="/img/NoImage.png" alt="상품 사진" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${item.title}"></h5>
+                    <p class="card-text" th:text="'가격: ' + ${item.price}"></p>
+                    <p class="card-text" th:text="'브랜드: ' + ${item.brand}"></p>
+                    <p class="card-text" th:text="'찜하기: ' + ${item.cartCount}"></p>
+                    <p class="card-text" th:text="'카테고리: ' + ${item.category.name}"></p>
+                    <p class="card-text">
+                        <span th:each="address : ${item.addresses}" th:text="${address.name} + ' '"></span>
+                    </p>
+                    <p>
+                            <span th:if="${item.itemStatus}"
+                                  class="text-danger"
+                                  th:text="'판매중 !!'"></span>
+                        <span th:unless="${item.itemStatus}"
+                              class="text-secondary"
+                              th:text="'판매완료'"></span>
+                    </p>
+                    <a th:href="@{/items/{id}(id=${item.id})}" class="btn btn-outline-danger">상세보기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 style="font-weight: bold;">인기글</h4>
+    <div class="row mt-4">
+        <div class="col-md-12" th:each="post : ${posts}">
+            <div class="popular-card" >
+                <div class="popular-card-body">
+                    <h5 class="post-title">
+                        <a th:href="@{/board/{boardId}/post/{postId}(boardId=${post.board.id}, postId=${post.id})}" th:text="${post.title}"></a>
+                    </h5>
+                    <p class="popular-card-text" th:text="'작성자: ' + ${post.author}"></p>
+                    <p class="popular-card-text" th:text="'댓글 수: ' + ${post.commentCount}"></p>
+                    <p class="popular-card-text" th:text="'좋아요: ' + ${post.likeCount}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

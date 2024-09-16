@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/token.js"></script>
+    <style>
+        .gradient-custom {
+            background: linear-gradient(to right, #FFAFBD, #ffc3a0);
+            min-height: 100vh;
+        }
+        .card-custom {
+            border-radius: 15px;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn-custom {
+            background-color: #FF6F61;
+            color: white;
+            border-radius: 30px;
+            padding: 10px 20px;
+        }
+        .form-group input {
+            border-radius: 20px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+        }
+        .social-login img {
+            width: 180px;
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+        }
+        .social-login img:hover {
+            transform: scale(1.05);
+        }
+        .btn-signup {
+            background-color: #fff;
+            color: #FF6F61;
+            border: 1px solid #FF6F61;
+            border-radius: 30px;
+            padding: 10px 20px;
+            margin-top: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-signup:hover {
+            background-color: #FF6F61;
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="gradient-custom">
+<section class="d-flex justify-content-center align-items-center vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="card card-custom p-4">
+                    <div class="card-body text-center">
+                        <h2 class="mb-4" style="color: #FF6F61;" >유즈드 파크</h2>
+
+                        <form id="loginForm" method="POST" action="/login">
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="username" name="username" placeholder="Email" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom btn-block mt-4">로그인</button>
+                        </form>
+
+                        <a href="/signup" class="btn btn-signup btn-block">회원가입</a>
+
+                        <div class="social-login mt-4">
+                            <a href="/oauth2/authorization/google">
+                                <img src="/img/google.png" alt="Google Login">
+                            </a>
+                            <a href="/oauth2/authorization/kakao">
+                                <img src="/img/kakao.png" alt="Kakao Login">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+
+    fetch('/login', {
+        method: 'POST',
+        body: formData,
+        )
+    .then(response => {
+        if (response.ok) {
+            alert('로그인 성공!');
+
+            window.location.href = '/';
+        } else {
+
+            alert('로그인 실패');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('로그인 실패');
+    });
+});
+</script>
+
+</body>
+</html>

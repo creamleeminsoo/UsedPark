@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 대시보드</title>
+    <script src="/js/util.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .gradient-custom {
+            background: linear-gradient(to right, white, black);
+            min-height: 100vh;
+        }
+        .container-custom {
+            display: flex;
+            height: 100%;
+            max-width: 100%;
+        }
+        .nav-section {
+            background-color: white;
+            width: 250px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-right: 20px;
+            height: 900px;
+        }
+        .nav-section h3 {
+            color: #566163;
+            font-weight: bold;
+        }
+        .nav-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .nav-section ul li {
+            margin-bottom: 10px;
+        }
+        .nav-section ul li a {
+            color: #566163;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-section ul li a:hover {
+            text-decoration: underline;
+        }
+        .main-card {
+            border-radius: 25px;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card-custom {
+            border-radius: 25px;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+        }
+        .card-header-custom {
+            background-color: #566163;
+            color: white;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        .card-body-custom {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #566163;
+        }
+    </style>
+</head>
+<body class="gradient-custom">
+<section class="d-flex justify-content-center align-items-center vh-100">
+    <div class="container container-custom">
+
+        <div class="nav-section">
+            <h3>관리자 페이지</h3>
+            <br><br>
+            <ul>
+                <li><a href="/">홈페이지</a></li>
+                <li><span onclick="handleAdminUserRequest();">회원관리</span></li>
+                <li><span onclick="handleAdminPostRequest();">게시판 관리 </span></li>
+                <li><span onclick="handleAdminItemRequest();">상품 관리 </span></li>
+                <li><a href="#" data-toggle="modal" data-target="#createBoardModal">게시판 생성</a></li>
+            </ul>
+        </div>
+        <script>
+            function handleAdminUserRequest() {
+                httpGetRequest('GET', '/admin/users', success, fail);
+            }
+            function handleAdminPostRequest() {
+                httpGetRequest('GET', '/admin/posts', success, fail);
+            }
+            function handleAdminItemRequest() {
+                httpGetRequest('GET', '/admin/items', success, fail);
+            }
+
+        </script>
+
+        <div class="main-card">
+            <div class="d-flex flex-wrap justify-content-center">
+                <div class="card card-custom">
+                    <div class="card-header card-header-custom">게시판 수</div>
+                    <div class="card-body card-body-custom" th:text="${data.boardCount}"></div>
+                </div>
+                <div class="card card-custom">
+                    <div class="card-header card-header-custom">게시물 수</div>
+                    <div class="card-body card-body-custom" th:text="${data.postCount}"></div>
+                </div>
+                <div class="card card-custom">
+                    <div class="card-header card-header-custom">회원 수</div>
+                    <div class="card-body card-body-custom" th:text="${data.userCount}"></div>
+                </div>
+                <div class="card card-custom">
+                    <div class="card-header card-header-custom">상품 수</div>
+                    <div class="card-body card-body-custom" th:text="${data.itemCount}"></div>
+                </div>
+                <div class="card card-custom">
+                    <div class="card-header card-header-custom">댓글 수</div>
+                    <div class="card-body card-body-custom" th:text="${data.commentCount}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="createBoardModal" tabindex="-1" role="dialog" aria-labelledby="createBoardModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createBoardModalLabel">게시판 생성</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="createBoardForm">
+                            <div class="form-group">
+                                <label for="boardName">게시판 이름</label>
+                                <input type="text" class="form-control" id="boardName" placeholder="게시판 이름을 입력하세요">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="createBoard()">생성</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    function createBoard() {
+        var boardName = document.getElementById('boardName').value;
+
+        if (boardName.trim() === '') {
+            alert('게시판 이름을 입력하세요.');
+            return;
+        }
+
+        function success() {
+                 alert('생성 완료되었습니다.');
+                 httpGetRequest('GET',`/admin`,success,fail);
+        }
+        function fail() {
+                 alert('생성 실패했습니다.');
+        }
+        httpRequest('POST', `/admin/board`,boardName, success, fail);
+        $('#createBoardModal').modal('hide');
+    }
+</script>
+
+</body>
+</html>

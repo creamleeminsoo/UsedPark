@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 판매</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #B8C6F6;
+            padding: 15px;
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .card {
+            width: 100%;
+            height: 550px;
+            margin: 15px;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+            background-color: #ffffff;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .card-text {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 20px;
+            padding: 10px 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .btn-filter {
+            border-radius: 20px;
+            margin: 5px;
+            padding: 12px 20px;
+            font-size: 18px;
+        }
+
+        .btn-filter:hover {
+            opacity: 0.8;
+        }
+
+        .btn-filter-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align buttons to the left */
+        }
+
+        .filter-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            margin: 10px;
+            padding: 10px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            width: calc(25% - 20px);
+        }
+
+        .pagination-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <span class="navbar-brand mb-0">유즈드 파크</span>
+</nav>
+<div class="container">
+    <div class="input-group mt-3">
+        <input type="text" id="keyword" class="form-control search-input" placeholder="검색어를 입력하세요">
+        <div class="input-group-append">
+            <button type="button" id="searchButton" class="btn btn-outline-secondary">
+                검색
+            </button>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="btn-filter-group">
+            <button type="button" id="categoryFilter" class="btn btn-outline-primary btn-filter">카테고리별 정렬</button>
+            <button type="button" id="addressFilter" class="btn btn-outline-primary btn-filter">주소별 정렬</button>
+        </div>
+    </div>
+
+    <div id="filterContent" class="filter-content mt-4">
+
+    </div>
+
+    <script>
+        document.getElementById('searchButton').addEventListener('click', function() {
+            var keyword = document.getElementById('keyword').value;
+            if (keyword) {
+                var url = '/items?keyword=' + encodeURIComponent(keyword);
+                window.location.href = url;
+            }
+        });
+
+        document.getElementById('categoryFilter').addEventListener('click', function() {
+            fetch('/api/categories')
+                .then(response => response.json())
+                .then(data => {
+                    var filterContent = document.getElementById('filterContent');
+                    filterContent.innerHTML = '';
+                    data.forEach(category => {
+                        var item = document.createElement('div');
+                        item.className = 'filter-item';
+                        item.textContent = category.name;
+                        item.addEventListener('click', function() {
+                            window.location.href = `/items?category=${category.id}`;
+                        });
+                        filterContent.appendChild(item);
+                    });
+                });
+        });
+
+        document.getElementById('addressFilter').addEventListener('click', function() {
+            fetch('/api/addresses')
+                .then(response => response.json())
+                .then(data => {
+                    var filterContent = document.getElementById('filterContent');
+                    filterContent.innerHTML = '';
+                    data.forEach(address => {
+                        var item = document.createElement('div');
+                        item.className = 'filter-item';
+                        item.textContent = address.name;
+                        item.addEventListener('click', function() {
+                            window.location.href = `/items?address=${address.id}`;
+                        });
+                        filterContent.appendChild(item);
+                    });
+                });
+        });
+
+    </script>
+
+    <div class="row mt-4">
+        <div class="col-md-4" th:each="item : ${items.content}">
+            <div class="card">
+                <img th:if="${item.image != null}"
+                     th:src="@{'/ItemImage/' + ${item.image.filename}}"
+                     alt="상품 사진" class="card-img-top">
+                <img th:if="${item.image == null}"
+                     src="/img/NoImage.png" alt="상품 사진" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${item.title}"></h5>
+                    <p class="card-text" th:text="'가격: ' + ${item.price}"></p>
+                    <p class="card-text" th:text="'브랜드: ' + ${item.brand}"></p>
+                    <p class="card-text" th:text="'찜하기: ' + ${item.cartCount}"></p>
+                    <p class="card-text" th:text="'카테고리: ' + ${item.category.name}"></p>
+                    <p class="card-text">
+                        <span th:each="address : ${item.addresses}" th:text="${address.name} + ' '"></span>
+                    </p>
+                    <p>
+                        <span th:if="${item.itemStatus}"
+                              class="text-danger"
+                              th:text="'판매중 !!'"></span>
+                        <span th:unless="${item.itemStatus}"
+                              class="text-secondary"
+                              th:text="'판매완료'"></span>
+                    </p>
+                    <a th:href="@{/items/{id}(id=${item.id})}" class="btn btn-outline-danger">상세보기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-outline-primary btn-sm"
+            th:onclick="|location.href='@{/new-item}'|">상품 등록</button>
+
+    <div class="pagination-container mt-4">
+        <span th:each="pageNum : ${#numbers.sequence(0, items.totalPages - 1)}">
+            <a th:href="@{'/items' + '?order=' + ${order} + '&page=' + ${pageNum} + '&size=' + ${size}}"
+               th:text="${pageNum + 1}"
+               th:classappend="${pageNum == items.number} ? 'btn btn-primary' : 'btn btn-outline-info'"></a>
+        </span>
+    </div>
+
+    <div>
+        <a th:if="${items.number > 0}"
+           th:href="@{'/items' + '?order=' + ${order} + '&page=' + (${items.number} - 1) + '&size=' + ${size}}"
+           class="btn btn-outline-info">이전</a>
+        <a th:if="${items.number < items.totalPages - 1}"
+           th:href="@{'/items' + '?order=' + ${order} + '&page=' + (${items.number} + 1) + '&size=' + ${size}}"
+           class="btn btn-outline-info">다음</a>
+        <input type="hidden" id="currentPage" th:value="${items.number}" />
+        <input type="hidden" id="size" th:value="${size}" />
+    </div>
+</div>
+
+</body>
+</html>

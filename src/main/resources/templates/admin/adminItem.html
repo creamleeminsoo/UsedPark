@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .gradient-custom {
+            background: linear-gradient(to right, white, gray);
+            min-height: 100vh;
+        }
+        .container-custom {
+            display: flex;
+            height: 100%;
+            max-width: 100%;
+            padding: 20px;
+        }
+        .nav-section {
+            background-color: white;
+            width: 250px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        .nav-section h3 {
+            color: #566163;
+            font-weight: bold;
+        }
+        .nav-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .nav-section ul li {
+            margin-bottom: 10px;
+        }
+        .nav-section ul li span {
+            color: #566163;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .nav-section ul li span:hover {
+            text-decoration: underline;
+        }
+        .main-content {
+            flex-grow: 1;
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: auto;
+            height: auto;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .card-text {
+            color: #6c757d;
+        }
+        .card-body {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .main-content .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #343a40;
+        }
+        .card-item {
+            width: 100%;
+            height: 550px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            margin-right: 10px;
+        }
+
+        .card-item img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .col-md-4 {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .card-item:last-child {
+            margin-right: 0;
+        }
+        .pagination-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .page-link {
+            margin: 5px;
+        }
+        .filter-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
+    <script src="/js/util.js"></script>
+    <script src="/js/token.js"></script>
+</head>
+<body class="gradient-custom">
+<section class="d-flex justify-content-center align-items-start vh-100">
+    <div class="container container-custom">
+        <div class="nav-section">
+            <h3>상품 관리</h3>
+            <br><br>
+            <ul>
+                <li><a href="/" style="color:black;">홈페이지</a></li>
+                <li><span onclick="handleAdminUserRequest();">유저 관리 </span></li>
+                <li><span onclick="handleAdminPostRequest();">게시글 관리 </span></li>
+            </ul>
+        </div>
+        <script>
+            function handleAdminUserRequest() {
+                httpGetRequest('GET', '/admin/users', success, fail);
+            }
+            function handleAdminPostRequest() {
+                httpGetRequest('GET', '/admin/posts', success, fail);
+            }
+        </script>
+
+        <div class="main-content">
+            <div class="input-group mt-3">
+                <input type="text" id="searchKeyword" class="form-control search-input" placeholder="검색어를 입력하세요">
+                <div class="input-group-append">
+                    <select id="searchType" class="custom-select">
+                        <option value="">검색설정</option>
+                        <option value="title">제목</option>
+                        <option value="nickname">등록자</option>
+                    </select>
+                    <button type="button" id="searchButton" class="btn btn-outline-secondary">
+                        검색
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="sortSelect">정렬 기준:</label>
+                <select id="sortSelect" class="custom-select">
+                    <option >원하는 정렬기준을 선택해주세요.</option>
+                    <option value="desc">최신순</option>
+                    <option value="asc">등록순</option>
+                </select>
+            </div>
+
+            <div id="cart-section" class="mt-4">
+                <div class="section-title">내 상품</div>
+                <div class="row mt-4">
+                    <div class="col-md-4" th:each="item : ${items}">
+                        <input type="hidden" id="itemId" th:value="${item.id}">
+                        <div class="card-item">
+                            <img th:if="${item.image != null}"
+                                 th:src="@{'/ItemImage/' + ${item.image.filename}}"
+                                 alt="상품 사진">
+                            <img th:if="${item.image == null}"
+                                 src="/img/NoImage.png" alt="상품 사진">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${item.title}"></h5>
+                                <p class="card-text" th:text="'가격: ' + ${item.price}"></p>
+                                <p class="card-text" th:text="'브랜드: ' + ${item.brand}"></p>
+                                <p class="card-text" th:text="'찜하기: ' + ${item.cartCount}"></p>
+                                <p class="card-text" th:text="'카테고리: ' + ${item.category.name}"></p>
+                                <p class="card-text" th:text="'등록자: ' + ${item.user.nickname}"></p>
+                                <p class="card-text">
+                                    <span th:each="address : ${item.addresses}" th:text="${address.name} + ' '"></span>
+                                </p>
+                                <p>
+                                <span th:if="${item.itemStatus}"
+                                      class="text-danger"
+                                      th:text="'판매중 !!'"></span>
+
+                                    <span th:unless="${item.itemStatus}"
+                                          class="text-secondary"
+                                          th:text="'판매완료'"></span>
+                                </p>
+                                <a th:href="@{/items/{id}(id=${item.id})}" class="btn btn-outline-primary">상세보기</a>
+                                <button class="btn btn-danger delete-btn" th:onclick="'deletePost(' + ${item.id} + ')'">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pagination-container">
+                <span th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
+                    <a href="#"
+                       th:attr="data-page=${pageNum}, data-order=${order}, data-size=${size}"
+                       class="page-link"
+                       th:text="${pageNum + 1}"
+                       th:classappend="${pageNum == currentPage} ? 'btn btn-primary' : 'btn btn-outline-info'"></a>
+                </span>
+            </div>
+
+            <div>
+                <a th:if="${currentPage > 0}"
+                   href="#"
+                   th:attr="data-page=${currentPage - 1}, data-order=${order}, data-size=${size}"
+                   class="page-link btn btn-outline-info">
+                    이전
+                </a>
+                <a th:if="${currentPage < totalPages - 1}"
+                   href="#"
+                   th:attr="data-page=${currentPage + 1}, data-order=${order}, data-size=${size}"
+                   class="page-link btn btn-outline-info">
+                    다음
+                </a>
+            </div>
+            <input type="hidden" id="currentPage" th:value="${currentPage}" />
+            <input type="hidden" id="size" th:value="${size}" />
+        </div>
+    </div>
+</section>
+<script>
+    function deletePost(itemId) {
+        if (confirm('정말로 이 상품을 삭제하시겠습니까?')) {
+            httpRequest(
+                'DELETE',
+                `/admin/items/${itemId}`,
+                null,
+                function success() {
+                    alert('상품이 삭제되었습니다.');
+                    httpGetRequest('GET',`/admin/items`,success,fail);
+                },
+                function fail() {
+                    httpGetRequest('GET',`/admin/items`,success,fail);
+                }
+            );
+        }
+    }
+
+    function fetchPage(order, pageNum, size){
+        const url = `/admin/items?order=${order}&page=${pageNum}&size=${size}`;
+        httpGetRequest('GET',url,success,fail);
+    }
+    function handlePagination(event) {
+        event.preventDefault();
+        const target = event.currentTarget;
+        const pageNum = target.getAttribute('data-page');
+        const order = target.getAttribute('data-order');
+        const size = target.getAttribute('data-size');
+        fetchPage(order, pageNum, size);
+    }
+
+    document.querySelectorAll('.page-link').forEach(link => {
+        link.addEventListener('click', handlePagination);
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', function() {
+        const sortOrder = this.value;
+        const url = `/admin/items?order=${sortOrder}`;
+        httpGetRequest('GET', url, success, fail);
+    });
+    document.getElementById('searchButton').addEventListener('click', function() {
+            const keyword = document.getElementById('searchKeyword').value;
+            const type = document.getElementById('searchType').value;
+            const url = `/admin/items?keyword=${keyword}&type=${type}`;
+            httpGetRequest('GET', url, success, fail);
+    });
+</script>
+</body>
+</html>

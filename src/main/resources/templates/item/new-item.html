@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 등록 - 유즈드 파크</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #B8C6F6;
+            padding: 15px;
+        }
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #B8C6F6;
+            color: white;
+            border-radius: 25px;
+            font-size: 1rem;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 10px;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .custom-file-upload:hover {
+            background-color: #9AA3F4;
+        }
+        .image-upload {
+            display: flex;
+            justify-content: space-between;
+        }
+        .image-upload input[type="file"] {
+            display: none;
+        }
+        .image-preview {
+            margin-top: 10px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .filter-btn {
+            margin-top: 10px;
+        }
+        .go-back {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/util.js"></script>
+</head>
+<body>
+<nav class="navbar">
+    <span class="navbar-brand mb-0" th:if="${item.id == null}">유즈드 파크 - 상품 등록</span>
+    <span class="navbar-brand mb-0" th:if="${item.id != null}">유즈드 파크 - 상품 수정</span>
+</nav>
+
+<div class="container">
+    <h2>상품 등록</h2>
+
+    <div class="form-group">
+        <button type="button" id="loadCategories" class="btn btn-primary filter-btn">카테고리 불러오기</button>
+        <button type="button" id="loadAddresses" class="btn btn-primary filter-btn">주소 불러오기</button>
+    </div>
+
+    <div class="form-group">
+        <label for="category" class="form-label">카테고리</label>
+        <select id="category" name="categoryId" class="form-control">
+            <option value="">선택</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="address" class="form-label">주소</label>
+        <select id="address" name="addressIds" class="form-control" multiple>
+
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="title" class="form-label">제목</label>
+        <input type="text" id="title" name="title" th:value="${item.title}" class="form-control" placeholder="제목을 입력하세요" required>
+    </div>
+
+    <div class="form-group">
+        <label for="brand" class="form-label">브랜드</label>
+        <input type="text" id="brand" name="brand" th:value="${item.brand}" class="form-control" placeholder="브랜드를 입력하세요" required>
+    </div>
+
+    <div class="form-group">
+        <label for="content" class="form-label">내용</label>
+        <textarea id="content" name="content" class="form-control" rows="5" placeholder="내용을 입력하세요" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="price" class="form-label">가격</label>
+        <input type="text" id="price" name="price" th:value="${item.price}" class="form-control" placeholder="가격을 입력하세요" required>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">이미지 업로드 (최대 3개)</label>
+        <div class="image-upload">
+            <div>
+                <label class="custom-file-upload">
+                    이미지 업로드 1
+                    <input type="file" id="image1" name="images" accept="image/*" onchange="previewImage(event, 'preview1')">
+                </label>
+                <img id="preview1" class="image-preview">
+            </div>
+            <div>
+                <label class="custom-file-upload">
+                    이미지 업로드 2
+                    <input type="file" id="image2" name="images" accept="image/*" onchange="previewImage(event, 'preview2')">
+                </label>
+                <img id="preview2" class="image-preview">
+            </div>
+            <div>
+                <label class="custom-file-upload">
+                    이미지 업로드 3
+                    <input type="file" id="image3" name="images" accept="image/*" onchange="previewImage(event, 'preview3')">
+                </label>
+                <img id="preview3" class="image-preview">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="mainImage" class="form-label">대표 이미지 선택</label>
+        <select id="mainImage" name="mainImage" class="form-control">
+            <option value="0">이미지 1</option>
+            <option value="1">이미지 2</option>
+            <option value="2">이미지 3</option>
+        </select>
+    </div>
+    <input type="hidden" id="itemId" th:value="${item.id}">
+
+    <div class="btn-container">
+        <button type="button" id="submitBtn"
+                th:if="${item.id == null}"
+                class="btn btn-primary">등록</button>
+        <button type="button" id="updateBtn"
+                th:if="${item.id != null}"
+                class="btn btn-primary">수정</button>
+    </div>
+</div>
+
+<div class="go-back">
+    <a href="/items" class="btn btn-outline-secondary">목록으로 돌아가기</a>
+</div>
+
+<script>
+    function previewImage(event, previewId) {
+        const input = event.target;
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const preview = document.getElementById(previewId);
+            preview.src = reader.result;
+        };
+
+        if (input.files[0]) {
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(document).ready(function() {
+        function loadCategories() {
+            fetch('/api/categories')
+                .then(response => response.json())
+                .then(data => {
+                    const categorySelect = $('#category');
+                    categorySelect.empty().append('<option value="">선택</option>');
+                    data.forEach(category => {
+                        categorySelect.append(`<option value="${category.id}">${category.name}</option>`);
+                    });
+                })
+                .catch(error => console.error('Error loading categories:', error));
+        }
+
+        function loadAddresses() {
+            fetch('/api/addresses')
+                .then(response => response.json())
+                .then(data => {
+                    const addressSelect = $('#address');
+                    addressSelect.empty();
+                    data.forEach(address => {
+                        addressSelect.append(`<option value="${address.id}">${address.name}</option>`);
+                    });
+                })
+                .catch(error => console.error('Error loading addresses:', error));
+        }
+
+        $('#loadCategories').click(function() {
+            loadCategories();
+        });
+
+        $('#loadAddresses').click(function() {
+            loadAddresses();
+        });
+
+        $('#submitBtn').click(function() {
+            const title = $('#title').val();
+            const brand = $('#brand').val();
+            const content = $('#content').val();
+            const categoryId = $('#category').val();
+            const price = $('#price').val();
+            const addressIds = $('#address').val();
+            const representativeImageIndex = $('#mainImage').val();
+
+            let formData = new FormData();
+            formData.append('item', new Blob([JSON.stringify({
+                title,
+                brand,
+                content,
+                categoryId,
+                addressIds,
+                price,
+                representativeImageIndex
+            })], { type: 'application/json' }));
+
+            ['image1', 'image2', 'image3'].forEach(id => {
+                const file = $(`#${id}`)[0].files[0];
+                if (file) formData.append('images', file);
+            });
+
+            function success() {
+                alert('상품 등록이 완료되었습니다.');
+                location.replace('/items');
+            }
+
+            function fail() {
+                alert('상품 등록에 실패했습니다.');
+                location.replace('/items');
+            }
+
+            httpRequest('POST', '/api/items', formData, success, fail);
+        });
+
+        $('#updateBtn').click(function() {
+            const title = $('#title').val();
+            const brand = $('#brand').val();
+            const content = $('#content').val();
+            const categoryId = $('#category').val();
+            const price = $('#price').val();
+            const addressIds = $('#address').val();
+            const representativeImageIndex = $('#mainImage').val();
+            const itemId = $('#itemId').val();
+
+            let formData = new FormData();
+            formData.append('item', new Blob([JSON.stringify({
+                title,
+                brand,
+                content,
+                categoryId,
+                addressIds,
+                price,
+                representativeImageIndex
+            })], { type: 'application/json' }));
+
+            ['image1', 'image2', 'image3'].forEach(id => {
+                const file = $(`#${id}`)[0].files[0];
+                if (file) formData.append('images', file);
+            });
+
+            function success() {
+                alert('상품 수정이 완료되었습니다.');
+                location.replace('/items');
+            }
+
+            function fail() {
+                alert('상품 수정에 실패했습니다.');
+                location.replace('/items');
+            }
+
+            httpRequest('PUT', `/api/items/${itemId}`, formData, success, fail);
+        });
+    });
+</script>
+</body>
+</html>
