@@ -144,7 +144,7 @@ function success(data) {
 }
 
 function fail(error) {
-         alert('관리자 페이지 접근 실패');
+         alert('접근 실패');
          console.error('Error:', error);
 }
 
@@ -193,7 +193,7 @@ function httpRequestWithAuth(method, url, body, success, fail) {
                     return httpRequestWithAuth(method, url, body, success, fail);
                 })
                 .catch(() => {
-                    alert('로그인해주세요.');
+                    alert('세션이 만료되었습니다. 다시 로그인해주세요.');
                     fail();
                 });
             } else {

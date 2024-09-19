@@ -183,7 +183,7 @@
             <div class="col-buttons">
                 <button type="button" class="btn btn-primary">구매하기</button>
                 <button type="button" id="addCartBtn" style="background-color:#B8C6F6; color: black;" class="btn btn-primary">찜하기</button>
-                <button type="button" class="btn btn-chat">판매자와 채팅하기</button>
+                <button type="button" id="chatBtn" class="btn btn-chat">판매자와 채팅하기</button>
             </div>
         </div>
     </div>
@@ -225,6 +225,10 @@
 
             httpRequestWithAuth('POST', `/api/item/${itemId}/cart`, null, success, fail);
         });
+
+        document.querySelector('#chatBtn').addEventListener('click',event => {
+            httpGetRequest('GET', '/chat', success, fail);
+        })
 
     </script>
 </div>

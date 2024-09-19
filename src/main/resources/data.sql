@@ -70,3 +70,4 @@ INSERT INTO item_address(item_id, address_id) VALUES (9, 2);
 INSERT INTO item_address(item_id, address_id) VALUES (10, 2);
 
 
+

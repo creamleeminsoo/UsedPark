@@ -7,8 +7,8 @@ import me.leeminsoo.usedpark.config.jwt.TokenProvider;
 import me.leeminsoo.usedpark.config.jwt.login.LoginFilter;
 import me.leeminsoo.usedpark.config.oauth2.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import me.leeminsoo.usedpark.config.oauth2.OAuth2SuccessHandler;
+
 import me.leeminsoo.usedpark.config.oauth2.OAuth2UserCustomService;
-import me.leeminsoo.usedpark.domain.user.Role;
 import me.leeminsoo.usedpark.repository.board.RefreshTokenRepository;
 import me.leeminsoo.usedpark.service.user.UserService;
 import org.springframework.context.annotation.Bean;
