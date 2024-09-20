@@ -15,13 +15,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @RestController
 public class PostApiController {
     private final PostService postService;
     private final BoardService boardService;
+    Map<String, Object> response;
 
     @GetMapping("/api/posts")
     public ResponseEntity<List<PostListResponseDTO>> getPosts() {
@@ -39,16 +43,19 @@ public class PostApiController {
                 .body(new PostListResponseDTO(post));
     }
     @PostMapping("/api/posts")
-    public ResponseEntity<String> addPost(@RequestPart("post") @Validated AddPostRequestDTO dto,
-                                        @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles,
-                                        @RequestParam(name = "boardId") Long boardId, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Map<String, Object>> addPost(@RequestPart("post") @Validated AddPostRequestDTO dto,
+                                                        @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles,
+                                                        @RequestParam(name = "boardId") Long boardId, @AuthenticationPrincipal User user) {
 
         dto.setBoard(boardService.getBoard(boardId));
         dto.setUser(user);
-        postService.save(dto,imageFiles);
+        Post post = postService.save(dto,imageFiles);
+        response = new HashMap<>();
+        response.put("id", post.getId());
+        response.put("message","글이 성공적으로 생성되었습니다");
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("성공");
+                .body(response);
     }
 
 
@@ -61,13 +68,17 @@ public class PostApiController {
 
     }
     @PutMapping("/api/posts/{postId}")
-    public ResponseEntity<String> updatePost(@PathVariable(name = "postId") Long postId,
+    public ResponseEntity<Map<String,Object>> updatePost(@PathVariable(name = "postId") Long postId,
                                            @RequestPart("post") @Validated UpdatePostDTO dto,
                                            @AuthenticationPrincipal User user,
                                            @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles){
-        postService.update(postId,dto,user,imageFiles);
+        Post post = postService.update(postId,dto,user,imageFiles);
+        response = new HashMap<>();
+        response.put("id",post.getId());
+        response.put("message","성공적으로 수정완료 되었습니다");
 
-        return ResponseEntity.ok().body("수정 성공");
+
+        return ResponseEntity.ok().body(response);
     }
 
 

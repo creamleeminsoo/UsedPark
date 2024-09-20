@@ -12,7 +12,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -20,13 +22,16 @@ import java.util.List;
 public class CommentApiController {
 
     private final CommentService commentService;
-
+    Map<String,Object> response;
     @PostMapping("/api/{postId}/comments")
-        public ResponseEntity<AddCommentResponseDTO> saveComment(@RequestBody @Validated AddCommentRequestDTO dto,@PathVariable Long postId,@AuthenticationPrincipal User user){
+        public ResponseEntity<Map<String,Object>> saveComment(@RequestBody @Validated AddCommentRequestDTO dto,@PathVariable Long postId,@AuthenticationPrincipal User user){
         dto.setUser(user);
         Comment comment = commentService.saveComment(dto,postId);
+        response = new HashMap<>();
+        response.put("id",comment.getId());
+        response.put("message","댓글이 성공적으로 생성되었습니다.");
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new AddCommentResponseDTO(comment));
+                .body(response);
     }
 
     @DeleteMapping("/api/comments/{commentId}")
@@ -36,18 +41,14 @@ public class CommentApiController {
     }
 
     @PutMapping("/api/comments/{commentId}")
-    public ResponseEntity<UpdateCommentResponseDTO> updateComment(@PathVariable(name = "commentId") Long commentId,
+    public ResponseEntity<Map<String,Object>> updateComment(@PathVariable(name = "commentId") Long commentId,
                                                                   @RequestBody @Validated UpdateCommentDTO dto,
                                                                   @AuthenticationPrincipal User user){
         Comment comment = commentService.updateComment(commentId,dto,user);
-        return ResponseEntity.ok().body(new UpdateCommentResponseDTO(comment));
-    }
-
-    @GetMapping("/api/comments")
-    public ResponseEntity<List<CommentResponseDTO>> getComments() {
-        List<CommentResponseDTO> comments = commentService.getComments().stream().map(CommentResponseDTO::new).toList();
-
-        return ResponseEntity.ok().body(comments);
+        response = new HashMap<>();
+        response.put("id",comment.getId());
+        response.put("message","댓글이 성공적으로 수정되었습니다.");
+        return ResponseEntity.ok().body(response);
     }
 
 }

@@ -101,10 +101,10 @@
         </div>
         <script>
             function handleAdminPostRequest() {
-                httpGetRequest('GET', '/admin/users', success, fail);
+                httpGetRequest('GET', '/admin/users', gerRequestFail);
             }
             function handleAdminItemRequest() {
-                httpGetRequest('GET', '/admin/items', success, fail);
+                httpGetRequest('GET', '/admin/items', gerRequestFail);
             }
         </script>
         <div class="main-card">
@@ -203,17 +203,17 @@
                 null,
                 function success() {
                     alert('게시물이 삭제되었습니다.');
-                    httpGetRequest('GET',`/admin/posts`,success,fail);
+                    httpGetRequest('GET',`/admin/posts`,gerRequestFail);
                 },
                 function fail() {
-                    httpGetRequest('GET',`/admin/posts`,success,fail);
+                    httpGetRequest('GET',`/admin/posts`,gerRequestFail);
                 }
             );
         }
     }
     function fetchPage(order, pageNum, size){
         const url = `/admin/posts?order=${order}&page=${pageNum}&size=${size}`;
-        httpGetRequest('GET',url,success,fail);
+        httpGetRequest('GET',url,gerRequestFail);
     }
     function handlePagination(event) {
         event.preventDefault();
@@ -231,20 +231,20 @@
     document.getElementById('boardSelect').addEventListener('change', function() {
         const boardType = this.value;
         const url = `/admin/posts?boardId=${boardType}`;
-        httpGetRequest('GET', url, success, fail);
+        httpGetRequest('GET', url, gerRequestFail);
 
     });
 
     document.getElementById('sortSelect').addEventListener('change', function() {
         const sortOrder = this.value;
         const url = `/admin/posts?order=${sortOrder}`;
-        httpGetRequest('GET', url, success, fail);
+        httpGetRequest('GET', url, gerRequestFail);
 });
     document.getElementById('searchButton').addEventListener('click', function() {
             const keyword = document.getElementById('searchKeyword').value;
             const type = document.getElementById('searchType').value;
             const url = `/admin/posts?keyword=${keyword}&type=${type}`;
-            httpGetRequest('GET', url, success, fail);
+            httpGetRequest('GET', url, gerRequestFail);
         });
 
 </script>

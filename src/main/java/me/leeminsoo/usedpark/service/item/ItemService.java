@@ -48,7 +48,7 @@ public class ItemService {
     private String uploadFolder;
 
     @Transactional
-    public void save(AddItemRequestDTO dto, List<MultipartFile> imageFiles){
+    public Item save(AddItemRequestDTO dto, List<MultipartFile> imageFiles){
         Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("찾을수없는 카테고리입니다"));
         List<Address> addresses = addressRepository.findAllById(dto.getAddressIds());
         Item item = Item.builder().title(dto.getTitle())
@@ -63,6 +63,7 @@ public class ItemService {
             if (!(imageFiles == null)) {
                 imageSave(imageFiles, item,dto.getRepresentativeImageIndex());
             }
+            return item;
     }
 
     @Transactional
@@ -125,7 +126,7 @@ public class ItemService {
 
     }
     @Transactional
-    public void update(Long itemId, UpdateItemRequestDTO dto,User user, List<MultipartFile> imageFiles) {
+    public Item update(Long itemId, UpdateItemRequestDTO dto,User user, List<MultipartFile> imageFiles) {
         Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
         List<Address> addresses = addressRepository.findAllById(dto.getAddressIds());
 
@@ -138,6 +139,7 @@ public class ItemService {
         if (!(imageFiles == null)) {
             imageSave(imageFiles, item, dto.getRepresentativeImageIndex());
         }
+        return item;
     }
     public Page<ItemListResponseDTO> getItems(String order, int page, int size,Long addressId,Long categoryId){
         Pageable pageable = setPageable(order,page,size);

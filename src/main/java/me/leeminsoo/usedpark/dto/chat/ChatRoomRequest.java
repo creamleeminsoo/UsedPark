@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ChatRoomRequest {
     @NotNull
-    private Long buyerId;
-    @NotNull
     private Long sellerId;
+
+    private Long buyerId;
 }

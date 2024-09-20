@@ -140,10 +140,10 @@
         </div>
         <script>
             function handleAdminUserRequest() {
-                httpGetRequest('GET', '/admin/users', success, fail);
+                httpGetRequest('GET', '/admin/users', gerRequestSuccess, gerRequestFail);
             }
             function handleAdminPostRequest() {
-                httpGetRequest('GET', '/admin/posts', success, fail);
+                httpGetRequest('GET', '/admin/posts', gerRequestSuccess, gerRequestFail);
             }
         </script>
 
@@ -246,10 +246,10 @@
                 null,
                 function success() {
                     alert('상품이 삭제되었습니다.');
-                    httpGetRequest('GET',`/admin/items`,success,fail);
+                    httpGetRequest('GET',`/admin/items`,gerRequestFail);
                 },
                 function fail() {
-                    httpGetRequest('GET',`/admin/items`,success,fail);
+                    httpGetRequest('GET',`/admin/items`,gerRequestFail);
                 }
             );
         }
@@ -257,7 +257,7 @@
 
     function fetchPage(order, pageNum, size){
         const url = `/admin/items?order=${order}&page=${pageNum}&size=${size}`;
-        httpGetRequest('GET',url,success,fail);
+        httpGetRequest('GET',url,gerRequestFail);
     }
     function handlePagination(event) {
         event.preventDefault();
@@ -275,13 +275,13 @@
     document.getElementById('sortSelect').addEventListener('change', function() {
         const sortOrder = this.value;
         const url = `/admin/items?order=${sortOrder}`;
-        httpGetRequest('GET', url, success, fail);
+        httpGetRequest('GET', url, gerRequestFail);
     });
     document.getElementById('searchButton').addEventListener('click', function() {
             const keyword = document.getElementById('searchKeyword').value;
             const type = document.getElementById('searchType').value;
             const url = `/admin/items?keyword=${keyword}&type=${type}`;
-            httpGetRequest('GET', url, success, fail);
+            httpGetRequest('GET', url, gerRequestFail);
     });
 </script>
 </body>

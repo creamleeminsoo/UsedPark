@@ -21,6 +21,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -41,11 +43,11 @@ public class UserController {
     }
 
     @PutMapping("/mypage")
-    public ResponseEntity<String> updateUser(@RequestBody UpdateUserRequestDTO dto,
+    public ResponseEntity<Void> updateUser(@RequestBody UpdateUserRequestDTO dto,
                                              @AuthenticationPrincipal User user,HttpServletRequest request,HttpServletResponse response){
         userService.update(dto,user.getId());
         deleteCookie(request,response);
-        return ResponseEntity.ok().body("유저 업데이트 성공");
+        return ResponseEntity.ok().build();
 
     }
 

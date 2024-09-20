@@ -151,7 +151,9 @@
                 if (file) formData.append('images', file);
             });
 
-            function success() {
+            function success(data) {
+                console.log(data.id+" 번째 글 ");
+                console.log(data.message);
                 alert('등록 완료되었습니다.');
                 location.replace(`/board/${boardId}`);
             }
@@ -178,7 +180,9 @@
                 if (file) formData.append('images', file);
             });
 
-            function success() {
+            function success(data) {
+                console.log(data.id+" 번째 글 ");
+                console.log(data.message);
                 alert('수정 완료되었습니다.');
                 location.replace(`/board/${boardId}`);
             }

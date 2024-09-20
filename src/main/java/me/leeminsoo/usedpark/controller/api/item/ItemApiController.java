@@ -1,6 +1,7 @@
 package me.leeminsoo.usedpark.controller.api.item;
 
 import lombok.RequiredArgsConstructor;
+import me.leeminsoo.usedpark.domain.item.Item;
 import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.dto.item.AddItemRequestDTO;
 import me.leeminsoo.usedpark.dto.item.UpdateItemRequestDTO;
@@ -12,7 +13,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,15 +23,19 @@ public class ItemApiController {
 
     private final ItemService itemService;
 
+    Map<String,Object> response;
+
     @PostMapping("/api/items")
-    public ResponseEntity<String> addItem(@RequestPart("item") @Validated AddItemRequestDTO dto,
+    public ResponseEntity<Map<String,Object>> addItem(@RequestPart("item") @Validated AddItemRequestDTO dto,
                                           @RequestPart(value = "images",required = false) List<MultipartFile> imageFiles,
                                           @AuthenticationPrincipal User user){
         dto.setUser(user);
-
-       itemService.save(dto,imageFiles);
-       return ResponseEntity.status(HttpStatus.CREATED)
-               .body("생성 성공");
+        Item item = itemService.save(dto,imageFiles);
+        response = new HashMap<>();
+        response.put("id",item.getId());
+        response.put("message","상품이 정상적으로 등록되었습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
     }
 
     @DeleteMapping("/api/items/{itemId}")
@@ -40,13 +47,16 @@ public class ItemApiController {
                 .build();
     }
     @PutMapping("/api/items/{itemId}")
-    public ResponseEntity<String> updatePost(@PathVariable(name = "itemId")Long itemId, @RequestPart("item") @Validated UpdateItemRequestDTO dto,
+    public ResponseEntity<Map<String,Object>> updatePost(@PathVariable(name = "itemId")Long itemId, @RequestPart("item") @Validated UpdateItemRequestDTO dto,
                                              @RequestPart(value = "images",required = false) List<MultipartFile> imageFiles,
                                              @AuthenticationPrincipal User user){
 
-        itemService.update(itemId,dto,user,imageFiles);
+        Item item = itemService.update(itemId,dto,user,imageFiles);
+        response = new HashMap<>();
+        response.put("id",item.getId());
+        response.put("message","상품이 성공적으로 수정되었습니다.");
         return ResponseEntity.ok()
-                    .body("수정 성공");
+                    .body(response);
 
     }
 

@@ -253,7 +253,9 @@
                 if (file) formData.append('images', file);
             });
 
-            function success() {
+            function success(data) {
+                console.log(data.id+ " 번째 상품" );
+                console.log(data.message);
                 alert('상품 등록이 완료되었습니다.');
                 location.replace('/items');
             }
@@ -292,7 +294,9 @@
                 if (file) formData.append('images', file);
             });
 
-            function success() {
+            function success(data) {
+                console.log(data.id+ " 번째 상품" );
+                console.log(data.message);
                 alert('상품 수정이 완료되었습니다.');
                 location.replace('/items');
             }

@@ -42,11 +42,13 @@
             var commentId = document.querySelector('#commentId').value;
             var content = document.querySelector('#content').value;
 
-            let body = JSON.stringify({
-                            content: content
-                        });
+            let body = {
+                content: content
+            };
 
-            function success() {
+            function success(data) {
+                    console.log(data.id+"번째 댓글");
+                    console.log(data.message);
                     alert('수정 완료되었습니다.');
                     window.history.back();
                     }
@@ -56,7 +58,7 @@
                 window.history.back();
                 }
 
-            CommentHttpRequest('PUT', `/api/comments/${commentId}`, body, success, fail);
+            httpRequest('PUT', `/api/comments/${commentId}`, body, success, fail);
             
         })
     </script>

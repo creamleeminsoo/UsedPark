@@ -2,10 +2,12 @@ package me.leeminsoo.usedpark.controller.mvc.item;
 
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.domain.item.Item;
+import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.dto.item.ItemListResponseDTO;
 import me.leeminsoo.usedpark.dto.item.ItemResponseDTO;
 import me.leeminsoo.usedpark.service.item.ItemService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +52,7 @@ public class ItemController {
         return "item/new-item";
     }
     @GetMapping("/items/{itemId}")
-    public String getItem(@PathVariable(name = "itemId") Long itemId,Model model) {
+    public String getItem(@PathVariable(name = "itemId") Long itemId, Model model) {
         ItemResponseDTO item = itemService.getItem(itemId);
         model.addAttribute("item",item);
         return "item/item";

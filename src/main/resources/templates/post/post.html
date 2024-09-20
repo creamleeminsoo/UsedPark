@@ -148,7 +148,7 @@
 
                             }
                         }
-                        httpRequestWithAuth('POST', `/api/posts/${postId}/likes`,null,success,fail);
+                        httpRequest('POST', `/api/posts/${postId}/likes`,null,success,fail);
                     });
                 </script>
                 <br>
@@ -175,17 +175,17 @@
                 </script>
 
                 <section class="mb-3" th:each="comment : ${post.comments}">
-                    <input type="hidden" id= "commentId", th:value="${comment.id}">
                     <div class="comment-section">
+                        <input type="hidden" class="commentId" th:value="${comment.id}">
                         <div class="comment-box">
                             <p class="card-text" th:text="${comment.content}"></p>
-                            <p class="text-muted" style="font-size: 12px;"th:text="'글쓴이: ' + ${comment.user.nickname}"></p>
-                            <p class="text-muted" style="font-size: 12px;"th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
+                            <p class="text-muted" style="font-size: 12px;" th:text="'글쓴이: ' + ${comment.user.nickname}"></p>
+                            <p class="text-muted" style="font-size: 12px;" th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
                             <button class="btn btn-outline-primary btn-sm"
                                     th:onclick="'location.href=\'/update-comment/' + ${comment.id} + '\';'">
                                 댓글 수정
                             </button>
-                            <button id="comment-delete" class="btn btn-outline-primary btn-sm">댓글 삭제</button>
+                            <button class="btn btn-outline-primary btn-sm comment-delete">댓글 삭제</button>
                         </div>
                     </div>
                 </section>
@@ -199,11 +199,13 @@
                         var content = document.querySelector('#content').value;
                         var boardId = document.querySelector("#boardId").value;
 
-                        let body = JSON.stringify({
+                        let body = {
                             content: content
-                        });
+                        };
 
-                        function success() {
+                        function success(data) {
+                            console.log(data.id + " 번째 댓글");
+                            console.log(data.message);
                             alert('등록 완료되었습니다.');
                             location.replace(`/board/${boardId}/post/${postId}`);
                         }
@@ -213,27 +215,34 @@
                             location.replace(`/board/${boardId}/post/${postId}`);
                         }
 
-                        CommentHttpRequest('POST', `/api/${postId}/comments`, body, success, fail);
+                        httpRequest('POST', `/api/${postId}/comments`, body, success, fail);
                     });
 
-                    document.querySelector('#comment-delete').addEventListener('click', event => {
-                        var commentId = document.querySelector("#commentId").value;
-                        var postId = document.querySelector("#postId").value;
-                        var boardId = document.querySelector("#boardId").value;
+                    document.querySelectorAll('.comment-delete').forEach(button => {
+                        button.addEventListener('click', event => {
+                            var commentSection = event.target.closest('.comment-section');
+                            if (commentSection) {
+                                var commentId = commentSection.querySelector('input.commentId').value;
+                                var postId = document.querySelector("#postId").value;
+                                var boardId = document.querySelector("#boardId").value;
 
-                        if (confirm('댓글을 삭제하시겠습니까?')) {
-                            function success() {
-                                alert('삭제가 완료되었습니다.');
-                                location.replace(`/board/${boardId}/post/${postId}`);
+                                if (confirm('댓글을 삭제하시겠습니까?')) {
+                                    function success() {
+                                        alert('댓글 삭제가 완료되었습니다.');
+                                        location.replace(`/board/${boardId}/post/${postId}`);
+                                    }
+
+                                    function fail() {
+                                        alert('댓글 삭제 실패했습니다.');
+                                        location.replace(`/board/${boardId}/post/${postId}`);
+                                    }
+
+                                    httpRequest('DELETE', `/api/comments/${commentId}`, null, success, fail);
+                                }
+                            } else {
+                                console.error('comment-section을 찾을 수 없습니다.');
                             }
-
-                            function fail() {
-                                alert('삭제 실패했습니다.');
-                                location.replace(`/board/${boardId}/post/${postId}`);
-                            }
-
-                            httpRequest('DELETE', `/api/comments/${commentId}`, null, success, fail);
-                        }
+                        });
                     });
 
                 </script>

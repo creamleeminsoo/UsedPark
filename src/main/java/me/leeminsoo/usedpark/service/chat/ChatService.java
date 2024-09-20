@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.error.exception.UserNotAuthenticationException;
 import me.leeminsoo.usedpark.config.error.exception.notpound.ChatRoomNotFoundException;
+import me.leeminsoo.usedpark.config.error.exception.notpound.UserNotFoundException;
 import me.leeminsoo.usedpark.domain.chat.ChatMessage;
 import me.leeminsoo.usedpark.domain.chat.ChatRoom;
 import me.leeminsoo.usedpark.domain.user.User;
@@ -24,18 +25,30 @@ public class ChatService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ChatRoom createRoom(ChatRoomRequest request){
+    public ChatRoom createRoom(ChatRoomRequest request) {
         Long buyerId = request.getBuyerId();
         Long sellerId = request.getSellerId();
-        ChatRoom room = chatRoomRepository.findByBuyerIdAndSellerId(buyerId,sellerId);
+
+        ChatRoom room = chatRoomRepository.findByBuyerIdAndSellerId(buyerId, sellerId);
         if (room == null) {
-            User buyer = userRepository.findById(buyerId).orElseThrow(UserNotAuthenticationException::new);
-            User seller = userRepository.findById(sellerId).orElseThrow(UserNotAuthenticationException::new);
-            return chatRoomRepository.save(new ChatRoom(seller,buyer));
-        }else {
+            room = chatRoomRepository.findBySellerIdAndBuyerId(sellerId, buyerId);
+        }
+
+        if (room == null) {
+            List<User> users = userRepository.findAllById(List.of(buyerId, sellerId));
+            if (users.size() != 2) {
+                throw new IllegalArgumentException("자신과 채팅할수없습니다");
+            }
+
+            User buyer = users.stream().filter(u -> u.getId().equals(buyerId)).findFirst().get();
+            User seller = users.stream().filter(u -> u.getId().equals(sellerId)).findFirst().get();
+
+            return chatRoomRepository.save(ChatRoom.builder().buyer(buyer).seller(seller).build());
+        } else {
             return room;
         }
     }
+
 
     public ChatMessageDTO createChat(Long roomId, ChatMessageDTO dto){
         ChatRoom room = chatRoomRepository.findById(roomId).orElseThrow(ChatRoomNotFoundException::new);
@@ -48,7 +61,8 @@ public class ChatService {
         return dto;
     }
 
-    public List<ChatMessage> getChatMessages(Long roomId){
-        return chatMessageRepository.findAllByRoomId(roomId);
-    }
+   public ChatRoom getRoomById(Long roomId){
+        return chatRoomRepository.findById(roomId).orElseThrow(ChatRoomNotFoundException::new);
+   }
+
 }

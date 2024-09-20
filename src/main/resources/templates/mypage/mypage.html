@@ -174,7 +174,7 @@
 
     <script>
         function handleUserUpdateRequest(){
-            httpGetRequest('GET', '/signup', success, fail);
+            httpGetRequest('GET', '/signup', gerRequestFail);
         }
         document.querySelector('#user-delete').addEventListener('click', event => {
             var userId = document.querySelector('#userId').value;
@@ -197,11 +197,11 @@
             if (confirm('장바구니에서 삭제하시겠습니까?')) {
                             function success() {
                                 alert('삭제가 완료되었습니다.');
-                                httpGetRequest('GET', '/mypage', success, fail);
+                                httpGetRequest('GET', '/mypage', gerRequestFail);
                             }
                             function fail() {
                                 alert('삭제 실패했습니다.');
-                                httpGetRequest('GET', '/mypage', success, fail);
+                                httpGetRequest('GET', '/mypage', gerRequestFail);
                             }
                         }
                         httpRequest('DELETE', `/api/item/${itemId}/cart`,null,success,fail);

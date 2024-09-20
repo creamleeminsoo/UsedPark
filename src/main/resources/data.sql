@@ -3,7 +3,7 @@ INSERT INTO board (name) VALUES('QNA 게시판');
 INSERT INTO board (name) VALUES('자유 게시판');
 INSERT INTO users(email,nickname,roles) VALUES ('dlalstn1234@naver.com','테스트 유저','USER');
 INSERT INTO users(email,password,nickname,roles) VALUES ('dlalstn1234@gmail.com','$2a$10$CX7JV6UO1MAswEAqPBxx3uiGrW2sZBGMbx1grw4mA5nRtkw5CSc4m','관리자','ADMIN');
-
+INSERT INTO users(email,password,nickname,roles) VALUES ('test@gmail.com','$2a$10$CX7JV6UO1MAswEAqPBxx3uiGrW2sZBGMbx1grw4mA5nRtkw5CSc4m','채팅테스트','ADMIN');
 INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUES ('첫번째글', '내용', NOW(), NOW(),2,1);
 INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUES ('두번째글', '내용', NOW(), NOW(),2,1);
 INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUES ('세번째글', '내용', NOW(), NOW(),2,1);

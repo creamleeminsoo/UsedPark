@@ -85,7 +85,7 @@ public class PostService {
 
     }
 
-    public void save(AddPostRequestDTO dto, List<MultipartFile> imageFiles) {
+    public Post save(AddPostRequestDTO dto, List<MultipartFile> imageFiles) {
 
 
         Post post = Post.builder()
@@ -101,11 +101,10 @@ public class PostService {
         if (!(imageFiles == null)) {
             imageSave(imageFiles, post);
         }
-
-
+        return post;
     }
     @Transactional
-    public void update(Long postId, UpdatePostDTO dto, User user,List<MultipartFile> imageFilesO) {
+    public Post update(Long postId, UpdatePostDTO dto, User user,List<MultipartFile> imageFiles) {
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         if (post.getUser().getId().equals(user.getId())) {
@@ -115,9 +114,10 @@ public class PostService {
         List<PostImage> images = imageRepository.findByPostId(postId);
         deleteImage(images,postId);
 
-        if (!(imageFilesO.isEmpty())) {
-            imageSave(imageFilesO, post);
+        if (imageFiles != null) {
+            imageSave(imageFiles, post);
         }
+        return post;
     }
 
     public Page<PostListViewResponseDTO> getPosts(Long boardId, String order, int page, int size) {

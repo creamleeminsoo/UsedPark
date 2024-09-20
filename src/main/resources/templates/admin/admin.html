@@ -102,13 +102,13 @@
         </div>
         <script>
             function handleAdminUserRequest() {
-                httpGetRequest('GET', '/admin/users', success, fail);
+                httpGetRequest('GET', '/admin/users', gerRequestFail);
             }
             function handleAdminPostRequest() {
-                httpGetRequest('GET', '/admin/posts', success, fail);
+                httpGetRequest('GET', '/admin/posts', gerRequestFail);
             }
             function handleAdminItemRequest() {
-                httpGetRequest('GET', '/admin/items', success, fail);
+                httpGetRequest('GET', '/admin/items', gerRequestFail);
             }
 
         </script>
@@ -177,7 +177,7 @@
 
         function success() {
                  alert('생성 완료되었습니다.');
-                 httpGetRequest('GET',`/admin`,success,fail);
+                 httpGetRequest('GET',`/admin`,gerRequestFail);
         }
         function fail() {
                  alert('생성 실패했습니다.');
