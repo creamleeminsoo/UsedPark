@@ -12,4 +12,5 @@ public class ChatMessageDTO {
     private String message;
     private String sender;
     private LocalDateTime sendTime;
+    private Long receiver;
 }

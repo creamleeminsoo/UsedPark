@@ -7,6 +7,37 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .chat-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 1500px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        h3 {
+            color: gray;
+            text-align: center;
+            font-weight: bold;
+            margin: 5px 0;
+            cursor: pointer;
         }
 
         #chat-area {
@@ -15,50 +46,131 @@
             border: 1px solid #ddd;
             overflow-y: scroll;
             padding: 10px;
-            background-color: #f9f9f9;
+            background-color: #ffffff;
+            border-radius: 8px;
+        }
+
+         .messages {
+            display: flex;
+            flex-direction: column;
         }
 
         .message {
             margin-bottom: 10px;
-            padding: 5px;
-            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 8px;
+            position: relative;
+            max-width: 30%;
+            word-wrap: break-word;
+        }
+        .my-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
         }
 
-        .message strong {
-            color: #007bff;
+        .other-message {
+            background-color: #e9ecef;
+            color: black;
+            align-self: flex-start;
         }
 
         #message-input {
-            width: 80%;
+            width: calc(100% - 100px);
             padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+
+        #send-btn, #leave-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
         }
 
         #send-btn {
-            padding: 10px;
+            background-color: #007bff;
         }
 
         #leave-btn {
             background-color: red;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
+        }
+
+        .text-muted {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .button-section {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .go-back a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .go-back a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-<h1>Chat Room</h1>
 
-<div id="chat-area"></div>
 <input type="hidden" id="sender" th:value="${user.nickname}">
 <input type="hidden" id="roomId" th:value="${room.id}">
-<input type="text" id="message-input" placeholder="Type your message here..." />
-<button id="send-btn">Send</button>
+<input type="hidden" id="otherUserId" th:value="${otherUserId}">
 
-<button id="leave-btn">채팅방 나가기</button>
+<div class="chat-container">
+    <div>
+        <h1 th:text="${room.name}">채팅방 이름</h1>
+        <h3 id="view-other-user">상대방 정보보기</h3>
+    </div>
+
+    <div id="chat-area" class="chat-container">
+        <div class="messages">
+            <div th:each="message : ${room.messages}" class="message"
+                 th:classappend="${message.sender == user.nickname} ? 'my-message' : 'other-message'">
+                <strong th:text="${message.sender}">보낸사람</strong>:
+                <span th:text="${message.message}">내용</span>
+                <p class="text-muted"
+                   th:text="${#temporals.format(message.koreanSendTime, 'yyyy-MM-dd HH:mm')}"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-section">
+        <input type="text" id="message-input" placeholder="채팅을 입력해주세요" />
+        <button id="send-btn">보내기</button>
+    </div>
+
+    <div class="go-back">
+        <a href="/items">상품목록으로 돌아가기</a>
+        <a href="/">홈페이지로 돌아가기</a>
+        <button id="leave-btn">채팅방 나가기</button>
+    </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/js/util.js"></script>
+
 <script>
+    document.getElementById('view-other-user').onclick = function() {
+        var otherUserId = document.getElementById('otherUserId').value;
+        location.href = '/user/items/' + otherUserId;
+    };
+
     var stompClient = null;
     var subscription = null;
     var roomId = document.getElementById('roomId').value;
@@ -67,38 +179,66 @@
         var socket = new SockJS('/ws-stomp');
         stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
+        const accessToken = localStorage.getItem('access_token');
 
-            // 클라이언트가 채팅방(roomId)에 구독
-            subscription = stompClient.subscribe('/queue/' + roomId, function (message) {
-                showMessage(JSON.parse(message.body));
-            });
-        });
+        stompClient.connect(
+            {
+                'Authorization': 'Bearer ' + accessToken
+            },
+            function (frame) {
+                console.log('Connected: ' + frame);
+                subscription = stompClient.subscribe('/queue/' + roomId, function (message) {
+                    showMessage(JSON.parse(message.body));
+                });
+            },
+            function (error) {
+                console.error('Error connecting to WebSocket:', error);
+                RoomHandleError(error, roomId);
+            }
+        );
     }
 
     function showMessage(message) {
-        var chatArea = document.getElementById('chat-area');
+        var chatArea = document.getElementById('chat-area').querySelector('.messages');
         var messageElement = document.createElement('div');
         messageElement.classList.add('message');
-        messageElement.innerHTML = `<strong>${message.sender}:</strong> ${message.message}`;
+
+        var sendTime = new Date(message.sendTime);
+        sendTime.setHours(sendTime.getHours() + 9);
+
+        var formattedTime = sendTime.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+
+        messageElement.innerHTML = `
+            <strong>${message.sender}:</strong> ${message.message}
+            <p class="text-muted">${formattedTime}</p>
+        `;
+
+        messageElement.classList.add(message.sender === document.getElementById('sender').value ? 'my-message' : 'other-message');
         chatArea.appendChild(messageElement);
         chatArea.scrollTop = chatArea.scrollHeight;
     }
 
-    // 메시지 보내기
     function sendMessage() {
         var input = document.getElementById('message-input');
         var message = input.value;
         var sender = document.getElementById('sender').value;
         var sendTime = new Date().toISOString();
+        var receiver = document.getElementById('otherUserId').value;
 
         if (message && stompClient) {
             stompClient.send("/chat/" + roomId, {}, JSON.stringify({
                 roomId: roomId,
                 sender: sender,
                 message: message,
-                sendTime: sendTime
+                sendTime: sendTime,
+                receiver: receiver
             }));
             input.value = '';
         }
@@ -120,8 +260,11 @@
     document.getElementById('send-btn').addEventListener('click', sendMessage);
     document.getElementById('leave-btn').addEventListener('click', leaveChat);
 
-    window.onload = function() {
+    window.onload = function() { // 사용자가 채팅방에 들어올시 자동으로 소켓연결
         startChat(roomId);
+    };
+    window.onbeforeunload = function() { // 사용자가 채팅방에서 나갈시 자동으로 소켓 연결해제
+        leaveChat();
     };
 </script>
 </body>

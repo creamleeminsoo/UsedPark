@@ -27,7 +27,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(1);
-    public static final String REDIRECT_PATH = "/";
+    public static final String REDIRECT_PATH = "/oauth2/callback";
 
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -87,9 +87,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
 
-    private String getTargetUrl(String token) {
+    private String getTargetUrl(String accessToken) {
         return UriComponentsBuilder.fromUriString(REDIRECT_PATH)
-                .queryParam("token", token)
+                .queryParam("accessToken", accessToken)
                 .build()
                 .toUriString();
     }

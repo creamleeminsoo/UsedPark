@@ -2,16 +2,18 @@ package me.leeminsoo.usedpark.service.chat;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import me.leeminsoo.usedpark.config.error.exception.UserNotAuthenticationException;
 import me.leeminsoo.usedpark.config.error.exception.notpound.ChatRoomNotFoundException;
-import me.leeminsoo.usedpark.config.error.exception.notpound.UserNotFoundException;
+import me.leeminsoo.usedpark.config.error.exception.notpound.ItemNotFoundException;
 import me.leeminsoo.usedpark.domain.chat.ChatMessage;
 import me.leeminsoo.usedpark.domain.chat.ChatRoom;
+import me.leeminsoo.usedpark.domain.item.Item;
 import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.dto.chat.ChatMessageDTO;
 import me.leeminsoo.usedpark.dto.chat.ChatRoomRequest;
+import me.leeminsoo.usedpark.dto.chat.AlarmMessage;
 import me.leeminsoo.usedpark.repository.chat.ChatMessageRepository;
 import me.leeminsoo.usedpark.repository.chat.ChatRoomRepository;
+import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import me.leeminsoo.usedpark.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +25,16 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Transactional
     public ChatRoom createRoom(ChatRoomRequest request) {
         Long buyerId = request.getBuyerId();
         Long sellerId = request.getSellerId();
+        Long itemId = request.getItemId();
+        Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
 
-        ChatRoom room = chatRoomRepository.findByBuyerIdAndSellerId(buyerId, sellerId);
-        if (room == null) {
-            room = chatRoomRepository.findBySellerIdAndBuyerId(sellerId, buyerId);
-        }
+        ChatRoom room = chatRoomRepository.findByBuyerIdAndSellerIdAndItemId(buyerId, sellerId, itemId);
 
         if (room == null) {
             List<User> users = userRepository.findAllById(List.of(buyerId, sellerId));
@@ -43,7 +45,7 @@ public class ChatService {
             User buyer = users.stream().filter(u -> u.getId().equals(buyerId)).findFirst().get();
             User seller = users.stream().filter(u -> u.getId().equals(sellerId)).findFirst().get();
 
-            return chatRoomRepository.save(ChatRoom.builder().buyer(buyer).seller(seller).build());
+            return chatRoomRepository.save(ChatRoom.builder().name(request.getItemTitle()).buyer(buyer).seller(seller).item(item).build());
         } else {
             return room;
         }
@@ -56,6 +58,7 @@ public class ChatService {
                 .sender(dto.getSender())
                 .message(dto.getMessage())
                 .room(room)
+                .sendTime(dto.getSendTime())
                 .build();
         chatMessageRepository.save(message);
         return dto;
@@ -64,5 +67,9 @@ public class ChatService {
    public ChatRoom getRoomById(Long roomId){
         return chatRoomRepository.findById(roomId).orElseThrow(ChatRoomNotFoundException::new);
    }
+   public List<ChatRoom> getChatRooms(Long userId){
+        return chatRoomRepository.findByUserId(userId);
+   }
+
 
 }

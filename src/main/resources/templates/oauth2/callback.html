@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/js/util.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+  <meta charset="UTF-8">
+  <title>OAuth2 Login</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('accessToken');
+
+        if (accessToken) {
+            localStorage.setItem('access_token', accessToken);
+            window.location.href = '/';
+        } else {
+            alert('로그인 정보가 유효하지 않습니다.');
+            window.location.href = '/login';
+        }
+    });
+  </script>
+</head>
+<body>
+<div>로그인 처리 중...</div>
+</body>
+</html>

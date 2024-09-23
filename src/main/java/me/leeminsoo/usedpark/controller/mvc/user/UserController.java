@@ -85,4 +85,9 @@ public class UserController {
             return ResponseEntity.ok().build();
         }else throw new AccessDeniedException("권한이 없습니다");
     }
+
+    @GetMapping("/oauth2/callback")
+    public String callback() {
+        return "/oauth2/callback";
+    }
 }

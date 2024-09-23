@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class FilterController {
+public class FilterApiController {
 
     private final CategoryService categoryService;
     private final AddressService addressService;

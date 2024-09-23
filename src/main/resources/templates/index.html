@@ -153,7 +153,6 @@
             margin-bottom: 10px;
         }
     </style>
-    <script src="/js/token.js"></script>
     <script src="/js/util.js"></script>
     <script src="/js/logout.js"></script>
 </head>
@@ -194,14 +193,19 @@
     </div>
     <a onclick="handleMyPageRequest();">마이 페이지</a>
     <a onclick="handleAdminPageRequest();">관리자 페이지</a>
+    <a onclick="handleChatListRequest();">채팅</a>
 </div>
 <script>
+    function handleChatListRequest() {
+        httpGetRequest('GET', '/chat', gerRequestFail);
+    }
+
     function handleAdminPageRequest() {
     httpGetRequest('GET', '/admin', gerRequestFail);
-}
-function handleMyPageRequest() {
-    httpGetRequest('GET', '/mypage', gerRequestFail);
-}
+    }
+    function handleMyPageRequest() {
+        httpGetRequest('GET', '/mypage', gerRequestFail);
+    }
 </script>
 
 <div class="content">

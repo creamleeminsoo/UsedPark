@@ -152,6 +152,7 @@
 <body>
 <input type="hidden" id="itemId" th:value="${item.id}">
 <input type="hidden" id="sellerId" th:value="${item.user.id}">
+<input type="hidden" id="itemTitle" th:value="${item.title}">
 <nav class="navbar">
     <span class="navbar-brand mb-0">유즈드 파크</span>
 </nav>
@@ -229,22 +230,25 @@
 
         document.querySelector('#chatBtn').addEventListener('click', event => {
             var sellerId = document.querySelector('#sellerId').value;
+            var itemTitle = document.querySelector('#itemTitle').value;
+            var itemId = document.querySelector('#itemId').value;
 
             var body = {
-                sellerId: sellerId
+                sellerId: sellerId,
+                itemTitle: itemTitle,
+                itemId: itemId
             };
-
-            httpRequest('POST', `/chat`, body, success, fail);
 
             function success(data) {
                 var roomId = data.roomId;
-                var url = `/chat?roomId=${roomId}`;
+                var url = `/chat/${roomId}`;
                 httpGetRequest('GET',url, gerRequestFail);
             }
 
             function fail() {
                 alert('채팅방 생성에 실패했습니다.');
             }
+            httpRequest('POST', `/chat`, body, success, fail);
 
         });
     </script>

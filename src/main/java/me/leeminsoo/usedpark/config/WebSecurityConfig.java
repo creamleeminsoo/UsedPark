@@ -75,6 +75,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/categories", "/api/addresses").permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/mypage/**")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/chat/**")).authenticated()
                         .anyRequest().permitAll())
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")

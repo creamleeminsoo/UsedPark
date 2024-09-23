@@ -9,4 +9,11 @@ public class ChatRoomRequest {
     private Long sellerId;
 
     private Long buyerId;
+
+    @NotNull
+    private String itemTitle;
+
+    @NotNull
+    private Long itemId;
+
 }

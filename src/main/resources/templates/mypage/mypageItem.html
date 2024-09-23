@@ -124,7 +124,7 @@
             <ul>
                 <li><a href="/" style="color:black;">홈페이지</a></li>
                 <li><span id="mypage-btn" onclick="handleMyPageRequest();">마이페이지 </span></li>
-                <li><a style="color:black;" th:href="@{/user/posts/{userId}(userId=${userId})}">내가 쓴글</a></li>
+                <li><a style="color:black;" th:href="@{/user/posts/{userId}(userId=${userId})}">작성한 글 보기</a></li>
             </ul>
         </div>
         <script>
@@ -144,7 +144,7 @@
                 등록순
             </button>
             <div id="cart-section" class="mt-4">
-                <div class="section-title">내 상품</div>
+                <div class="section-title">등록한 상품</div>
                 <div class="row mt-4">
                     <div class="col-md-4" th:each="item : ${items}">
                         <input type="hidden" id="itemId" th:value="${item.id}">

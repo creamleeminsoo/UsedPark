@@ -47,6 +47,7 @@ INSERT INTO address (name) Values('서울 서초구');
 INSERT INTO address (name) Values('서울 구로구');
 INSERT INTO address (name) Values('부산 북구동');
 
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('아디다스 신발','아디다스','40000',3,NOW(),NOW(),'내고 불가',1);
 INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('아디다스 반팔티','아디다스','40000',2,NOW(),NOW(),'내고 불가',1);
 INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('아디다스 슬리퍼','아디다스','20000',2,NOW(),NOW(),'내고 불가',1);
 INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('나이키 반팔티','나이키','30000',2,NOW(),NOW(),'내고 불가',1);

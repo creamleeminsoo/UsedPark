@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @AllArgsConstructor
 @Getter
@@ -36,5 +38,9 @@ public class ChatMessage {
         this.message = message;
         this.room = room;
         this.sendTime = sendTime;
+    }
+
+    public ZonedDateTime getKoreanSendTime() {
+        return sendTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Seoul"));
     }
 }

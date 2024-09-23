@@ -1,7 +1,6 @@
 package me.leeminsoo.usedpark.controller.api.post;
 
 import lombok.RequiredArgsConstructor;
-import me.leeminsoo.usedpark.config.error.exception.UserNotAuthenticationException;
 import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.dto.board.post.LikeResponse;
 import me.leeminsoo.usedpark.service.board.LikeService;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class LikeController {
+public class LikeApiController {
     private final LikeService likeService;
 
     @PostMapping("/api/posts/{postId}/likes")

@@ -1,5 +1,6 @@
 package me.leeminsoo.usedpark.config.jwt.login;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,6 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 import static me.leeminsoo.usedpark.config.oauth2.OAuth2SuccessHandler.*;
@@ -54,11 +57,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         addRefreshTokenToCookie(request, response, refreshToken);
 
         String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
-        String targetUrl = getTargetUrl(accessToken);
 
-        RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-
-        redirectStrategy.sendRedirect(request, response, targetUrl);
+        Map<String,Object> responseBody = new HashMap<>();
+        responseBody.put("success",true);
+        responseBody.put("accessToken",accessToken);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        new ObjectMapper().writeValue(response.getWriter(), responseBody);
 
     }
 
@@ -82,13 +87,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN_COOKIE_NAME);
         CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, cookieMaxAge);
-    }
-
-    private String getTargetUrl(String token) {
-        return UriComponentsBuilder.fromUriString(REDIRECT_PATH)
-                .queryParam("token", token)
-                .build()
-                .toUriString();
     }
 
 
