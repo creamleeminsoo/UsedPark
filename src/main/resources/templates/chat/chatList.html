@@ -90,43 +90,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
 <script>
-    var stompClient = null;
-    var subscription = null;
     var messageCounts = {};
+    var eventSource = null;
 
-    function connect() {
-        const socket = new SockJS('/ws-stomp');
-        stompClient = Stomp.over(socket);
+    function initializeSSE() {
         const accessToken = localStorage.getItem('access_token');
 
-        stompClient.connect(
-            {
-                'Authorization': 'Bearer ' + accessToken
-            },
-            function (frame) {
-                console.log('Connected: ' + frame);
-                subscribeToRooms();
-            },
-            function (error) {
-                console.error('Error connecting to WebSocket:', error);
-                handleError(error);
-            }
-        );
-    }
+        if (!accessToken) {
+            console.error("토큰이 없으므로 SSE 연결 실패");
+            return;
+        }
 
-    function subscribeToRooms() {
-        var userId = document.getElementById('userId').value;
+        eventSource = new EventSource(`/subscribe/${accessToken}`);
 
-        subscription = stompClient.subscribe('/queue/user/' + userId, function (message) {
-            var msg = JSON.parse(message.body);
-            showMessage(msg);
+        eventSource.addEventListener('chat', function(event) {
+            handleNotification(event.data, 'chat');
         });
+
+        eventSource.onopen = function() {
+            console.log("SSE connection opened");
+        };
+
+        eventSource.onerror = function(event) {
+            console.error("SSE connection error: ", event);
+            handleError(event);
+        };
+
+        eventSource.onclose = function() {
+            console.log("SSE connection closed");
+        };
     }
 
-    function showMessage(message) {
-        var roomId = message.roomId;
-        console.log('Received message for roomId:', roomId);
-        var newMessageDiv = document.getElementById('new-message-' + roomId);
+    function handleNotification(data, type) {
+        const parsedData = JSON.parse(data);
+        const roomId = parsedData.roomId;
+        const newMessageDiv = document.getElementById('new-message-' + roomId);
 
         if (newMessageDiv) {
             if (!messageCounts[roomId]) {
@@ -142,22 +140,54 @@
         }
     }
 
-    function leaveChat() {
-        if (subscription) {
-            subscription.unsubscribe();
-            console.log('You have left the chat room.');
-        }
-
-        if (stompClient) {
-            stompClient.disconnect(function() {
-                console.log('Disconnected from WebSocket.');
-            });
+    function handleError(error) {
+        if (error.status === 401) {
+            const refreshToken = getCookie('refresh_token');
+            if (refreshToken) {
+                fetch('/api/token', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        refreshToken: refreshToken,
+                    }),
+                })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json();
+                    } else {
+                        throw new Error('Failed to refresh token');
+                    }
+                })
+                .then(result => {
+                    localStorage.setItem('access_token', result.accessToken);
+                    initializeSSE();
+                })
+                .catch(err => {
+                    console.error('Failed to refresh token:', err);
+                });
+            } else {
+                console.error('No refresh token available.');
+            }
+        } else {
+            console.error('Connection failed:', error);
         }
     }
 
-    window.onload = function() {
-        connect();
-    };
+    function leaveChat() {
+        if (eventSource) {
+            eventSource.close();
+            console.log('SSE connection closed');
+        } else {
+            console.log('No SSE connection to close');
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+            initializeSSE();
+    });
 
     window.onbeforeunload = function() {
         leaveChat();

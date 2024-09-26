@@ -1,0 +1,119 @@
+.notification {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.chat {
+    font-weight: bold;
+}
+
+.like {
+    font-weight: bold;
+}
+
+.comment {
+    font-weight: bold;
+}
+
+.chat-label {
+    color: blue;
+    font-weight: bold;
+}
+.like-label {
+    color: pink;
+    font-weight: bold;
+}
+.comment-label {
+    color: gray;
+    font-weight: bold;
+}
+
+.notification a {
+    color: white;
+    background-color: blue;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.notification a:hover {
+    background-color: darkblue;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: gray;
+    margin-top: 5px;
+}
+
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.notification-counter {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    display: none;
+}
+
+div {
+    position: relative;
+}
+
+#notificationButton img {
+    width: 40px;
+}
+
+
+.delete-button {
+    background-color: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.delete-button:hover {
+    text-decoration: underline;
+}
