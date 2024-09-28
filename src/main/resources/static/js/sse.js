@@ -1,25 +1,52 @@
 function initializeSSE() {
     const accessToken = localStorage.getItem('access_token');
-
     if (!accessToken) {
-        console.error("토큰이 없으므로 sse연결실패");
-        return;
-    }
+            console.error("토큰이 없으므로 리프레시 토큰으로 재발급 요청합니다.");
+            const refreshToken = getCookie('refresh_token');
+            if (refreshToken) {
+                fetch('/api/token', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + refreshToken,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ refreshToken: refreshToken }),
+                })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json();
+                    } else {
+                        throw new Error('Failed to refresh token');
+                    }
+                })
+                .then(result => {
+                    localStorage.setItem('access_token', result.accessToken);
+                    initializeSSE(); // 재발급 후 SSE 초기화
+                })
+                .catch(err => {
+                    console.error('토큰 재발급 실패:', err);
+                });
+            } else {
+                console.error('리프레시 토큰이 없습니다.');
+            }
+            return;
+        }
+
     const eventSource = new EventSource(`/subscribe/${accessToken}`);
 
     eventSource.addEventListener('comment', function(event) {
         console.log("New comment: ", event.data);
-        handleNotification(event.data,'comment');
+        handleNotification(event.data, 'comment');
     });
 
     eventSource.addEventListener('like', function(event) {
         console.log("New like: ", event.data);
-        handleNotification(event.data,'like');
+        handleNotification(event.data, 'like');
     });
 
     eventSource.addEventListener('chat', function(event) {
         console.log("New chat: ", event.data);
-        handleNotification(event.data,'chat');
+        handleNotification(event.data, 'chat');
     });
 
     eventSource.onopen = function() {
@@ -27,50 +54,14 @@ function initializeSSE() {
     };
 
     eventSource.onerror = function(event) {
-        handleError(event);
-    };
-
-    eventSource.onclose = function() {
-        console.log("SSE connection closed");
-    };
-}
-
-function handleError(error) {
-    if (error.status === 401) {
-        const refreshToken = getCookie('refresh_token');
-        if (refreshToken) {
-            fetch('/api/token', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    refreshToken: refreshToken,
-                }),
-            })
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                } else {
-                    throw new Error('Failed to refresh token');
-                }
-            })
-            .then(result => {
-                localStorage.setItem('access_token', result.accessToken);
-                initializeSSE();
-            })
-            .catch(err => {
-                console.error('Failed to refresh token:', err);
-            });
+        if (event.eventPhase === EventSource.CLOSED || event.currentTarget.readyState === EventSource.CLOSED) {
+            console.log("SSE connection closed or failed, stopping reconnection attempts.");
+            eventSource.close();
         } else {
-            console.error('No refresh token available.');
+            console.log("SSE connection error occurred, but continuing.");
         }
-    } else {
-        console.error('Connection failed:', error);
-    }
+    };
 }
-
 
 function handleNotification(data, type) {
     const parsedData = JSON.parse(data);

@@ -15,9 +15,12 @@ import me.leeminsoo.usedpark.repository.chat.ChatMessageRepository;
 import me.leeminsoo.usedpark.repository.chat.ChatRoomRepository;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import me.leeminsoo.usedpark.repository.user.UserRepository;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +29,7 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public ChatRoom createRoom(ChatRoomRequest request) {
@@ -69,6 +73,25 @@ public class ChatService {
    }
    public List<ChatRoom> getChatRooms(Long userId){
         return chatRoomRepository.findByUserId(userId);
+   }
+
+   @Transactional
+   public Long deleteChatRoom(Long roomId,Long userId){
+        ChatRoom room = chatRoomRepository.findById(roomId).orElseThrow(ChatRoomNotFoundException::new);
+        if (room.getBuyer() != null && room.getBuyer().getId().equals(userId)){
+            room.setBuyer(null);
+        }else {
+            room.setSeller(null);
+        }
+        Map<String, Object> message = new HashMap<>();
+        message.put("message", "상대방이 채팅방에서 나갔습니다.");
+        message.put("userId", userId);
+        messagingTemplate.convertAndSend("/queue/" + roomId, message);
+
+        if (room.getBuyer() == null && room.getSeller() == null){
+            chatRoomRepository.deleteById(roomId);
+        }
+        return roomId;
    }
 
 

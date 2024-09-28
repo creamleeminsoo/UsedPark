@@ -216,7 +216,7 @@
                 <p class="card-details-text" th:each="address : ${item.addresses}" th:text="${address.name} + ' '"></p>
             </div>
             <div class="col-buttons">
-                <button type="button" class="btn btn-primary">구매하기</button>
+                <button type="button" id="view-seller-user" class="btn btn-primary">판매자 정보보기</button>
                 <button type="button" id="addCartBtn" style="background-color:#B8C6F6; color: black;" class="btn btn-primary">찜하기</button>
                 <button type="button" id="chatBtn" class="btn btn-chat">판매자와 채팅하기</button>
             </div>
@@ -230,6 +230,11 @@
         <a th:href="@{/new-item(itemId=${item.id})}" class="btn btn-outline-danger">상품수정</a>
     </div>
     <script>
+        document.querySelector('#view-seller-user').addEventListener('click', event => {
+            var sellerId = document.querySelector('#sellerId').value;
+            location.href = '/user/items/' + sellerId;
+        });
+
         document.querySelector('#delete').addEventListener('click', event => {
             var itemId = document.querySelector('#itemId').value;
             if (confirm('상품을 삭제하시겠습니까?')) {

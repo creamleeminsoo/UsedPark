@@ -38,16 +38,9 @@ public class ChatController {
     public String getChatRoom(@PathVariable Long roomId, @AuthenticationPrincipal User user, Model model) {
 
         ChatRoom room = chatService.getRoomById(roomId);
-        Long otherUserId;
-        if (user.getId().equals(room.getBuyer().getId())){
-            otherUserId = room.getSeller().getId();
-        }else {
-            otherUserId = room.getBuyer().getId();
-        }
 
         model.addAttribute("user", user);
         model.addAttribute("room", room);
-        model.addAttribute("otherUserId",otherUserId);
         return "/chat/chat";
     }
     @GetMapping("/chat")
@@ -58,7 +51,14 @@ public class ChatController {
         model.addAttribute("user",user);
 
         return "/chat/chatList";
-
     }
-
+    @ResponseBody
+    @DeleteMapping("/chat/{roomId}")
+    public ResponseEntity<Map<String,Object>> deleteChatRoom(@PathVariable Long roomId,@AuthenticationPrincipal User user){
+        Long id = chatService.deleteChatRoom(roomId,user.getId());
+        Map<String,Object> response = new HashMap<>();
+        response.put("id",id);
+        response.put("message","채팅방 을 나가셨습니다");
+        return ResponseEntity.ok(response);
+    }
 }

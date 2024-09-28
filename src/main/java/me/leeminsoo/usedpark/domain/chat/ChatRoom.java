@@ -2,10 +2,7 @@ package me.leeminsoo.usedpark.domain.chat;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import me.leeminsoo.usedpark.domain.item.Item;
 import me.leeminsoo.usedpark.domain.user.User;
 
@@ -15,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@Setter
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,4 +43,5 @@ public class ChatRoom {
         this.seller = seller;
         this.item = item;
     }
+
 }
