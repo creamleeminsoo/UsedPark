@@ -1,12 +1,12 @@
-package me.leeminsoo.usedpark.controller.mvc.chat;
+package me.leeminsoo.usedpark.chat.controller;
 
 
 import lombok.RequiredArgsConstructor;
 
-import me.leeminsoo.usedpark.domain.chat.ChatRoom;
+import me.leeminsoo.usedpark.chat.domain.ChatRoom;
 import me.leeminsoo.usedpark.domain.user.User;
-import me.leeminsoo.usedpark.dto.chat.ChatRoomRequest;
-import me.leeminsoo.usedpark.service.chat.ChatService;
+import me.leeminsoo.usedpark.chat.dto.ChatRoomRequest;
+import me.leeminsoo.usedpark.chat.service.ChatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

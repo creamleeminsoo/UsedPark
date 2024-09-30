@@ -1,23 +1,23 @@
-package me.leeminsoo.usedpark.service.chat;
+package me.leeminsoo.usedpark.chat.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.error.exception.notpound.ChatRoomNotFoundException;
 import me.leeminsoo.usedpark.config.error.exception.notpound.ItemNotFoundException;
-import me.leeminsoo.usedpark.domain.chat.ChatMessage;
-import me.leeminsoo.usedpark.domain.chat.ChatRoom;
+import me.leeminsoo.usedpark.chat.domain.ChatMessage;
+import me.leeminsoo.usedpark.chat.domain.ChatRoom;
 import me.leeminsoo.usedpark.domain.item.Item;
 import me.leeminsoo.usedpark.domain.user.User;
-import me.leeminsoo.usedpark.dto.chat.ChatMessageDTO;
-import me.leeminsoo.usedpark.dto.chat.ChatRoomRequest;
-import me.leeminsoo.usedpark.dto.chat.AlarmMessage;
-import me.leeminsoo.usedpark.repository.chat.ChatMessageRepository;
-import me.leeminsoo.usedpark.repository.chat.ChatRoomRepository;
+import me.leeminsoo.usedpark.chat.dto.ChatMessageDTO;
+import me.leeminsoo.usedpark.chat.dto.ChatRoomRequest;
+import me.leeminsoo.usedpark.chat.repository.ChatMessageRepository;
+import me.leeminsoo.usedpark.chat.repository.ChatRoomRepository;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import me.leeminsoo.usedpark.repository.user.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +53,11 @@ public class ChatService {
         } else {
             return room;
         }
+    }
+    @Transactional
+    public void deleteOldMessages(){
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1); // 일주일전 메시지
+        chatMessageRepository.deleteBySendTimeBefore(oneWeekAgo);
     }
 
 

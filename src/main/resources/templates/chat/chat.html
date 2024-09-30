@@ -164,7 +164,8 @@
     <div class="go-back">
         <a href="/items">상품목록으로 돌아가기</a>
         <a href="/">홈페이지로 돌아가기</a>
-        <button id="leave-btn">채팅방 나가기</button>
+        <button id="remove-btn">채팅방 나가기</button>
+        <button id="chatList-btn">채팅방 리스트로 이동하기</button>
     </div>
 </div>
 
@@ -173,6 +174,11 @@
 <script src="/js/util.js"></script>
 
 <script>
+    document.getElementById('chatList-btn').onclick = function() {
+        leaveChat();
+        httpGetRequest('GET','/chat', gerRequestFail);
+    }
+
     document.getElementById('view-other-user').onclick = function() {
         var receiver = document.getElementById('receiver').value;
         if (!receiver) {
@@ -277,6 +283,9 @@
                 console.log('Disconnected from WebSocket.');
             });
         }
+    }
+    function removeChat() {
+        leaveChat();
         function success(data) {
             alert('채팅방에서 나가셨습니다');
             console.log(data);
@@ -289,8 +298,9 @@
         httpRequest('DELETE', `/chat/${roomId}`,null,success,fail);
     }
 
+
     document.getElementById('send-btn').addEventListener('click', sendMessage);
-    document.getElementById('leave-btn').addEventListener('click', leaveChat);
+    document.getElementById('remove-btn').addEventListener('click', removeChat);
 
     window.onload = function() { // 사용자가 채팅방에 들어올시 자동으로 소켓연결
         startChat(roomId);

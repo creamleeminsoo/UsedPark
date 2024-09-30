@@ -122,11 +122,6 @@
     <h2>상품 등록</h2>
 
     <div class="form-group">
-        <button type="button" id="loadCategories" class="btn btn-primary filter-btn">카테고리 불러오기</button>
-        <button type="button" id="loadAddresses" class="btn btn-primary filter-btn">주소 불러오기</button>
-    </div>
-
-    <div class="form-group">
         <label for="category" class="form-label">카테고리</label>
         <select id="category" name="categoryId" class="form-control">
             <option value="">선택</option>
@@ -253,13 +248,10 @@
                 .catch(error => console.error('Error loading addresses:', error));
         }
 
-        $('#loadCategories').click(function() {
+        window.onload = function() {
             loadCategories();
-        });
-
-        $('#loadAddresses').click(function() {
             loadAddresses();
-        });
+        };
 
         $('#submitBtn').click(function() {
             const title = $('#title').val();

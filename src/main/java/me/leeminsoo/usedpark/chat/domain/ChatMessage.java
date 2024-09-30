@@ -1,4 +1,4 @@
-package me.leeminsoo.usedpark.domain.chat;
+package me.leeminsoo.usedpark.chat.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

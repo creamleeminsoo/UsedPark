@@ -1,11 +1,11 @@
-package me.leeminsoo.usedpark.controller.mvc.chat;
+package me.leeminsoo.usedpark.chat.controller;
 
 
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.dto.alarm.ChatAlarmDTO;
-import me.leeminsoo.usedpark.dto.chat.ChatMessageDTO;
+import me.leeminsoo.usedpark.chat.dto.ChatMessageDTO;
 import me.leeminsoo.usedpark.service.alarm.AlarmService;
-import me.leeminsoo.usedpark.service.chat.ChatService;
+import me.leeminsoo.usedpark.chat.service.ChatService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;

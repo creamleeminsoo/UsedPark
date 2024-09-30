@@ -1,4 +1,4 @@
-package me.leeminsoo.usedpark.dto.chat;
+package me.leeminsoo.usedpark.chat.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

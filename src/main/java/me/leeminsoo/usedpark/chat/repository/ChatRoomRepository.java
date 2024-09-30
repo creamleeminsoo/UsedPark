@@ -1,6 +1,6 @@
-package me.leeminsoo.usedpark.repository.chat;
+package me.leeminsoo.usedpark.chat.repository;
 
-import me.leeminsoo.usedpark.domain.chat.ChatRoom;
+import me.leeminsoo.usedpark.chat.domain.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
