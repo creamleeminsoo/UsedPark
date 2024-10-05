@@ -235,9 +235,7 @@
                     <p class="card-text" th:text="'브랜드: ' + ${item.brand}"></p>
                     <p class="card-text" th:text="'찜하기: ' + ${item.cartCount}"></p>
                     <p class="card-text" th:text="'카테고리: ' + ${item.category.name}"></p>
-                    <p class="card-text">
-                        <span th:each="address : ${item.addresses}" th:text="${address.name} + ' '"></span>
-                    </p>
+                    <p class="card-text" th:text="'주소: ' + ${item.address.name}"></p>
                     <p>
                         <span th:if="${item.itemStatus}"
                               class="text-danger"

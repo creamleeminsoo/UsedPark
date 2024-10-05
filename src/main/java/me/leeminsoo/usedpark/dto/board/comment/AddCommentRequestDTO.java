@@ -1,6 +1,7 @@
 package me.leeminsoo.usedpark.dto.board.comment;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import me.leeminsoo.usedpark.domain.user.User;
 @NoArgsConstructor
 public class AddCommentRequestDTO {
 
-    @NotNull
+    @Size(min = 1,max = 100)
     private String content;
     private User user;
 

@@ -21,7 +21,7 @@ public class RefreshToken {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 
     public RefreshToken(User user,String refreshToken) {
         this.user = user;

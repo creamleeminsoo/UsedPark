@@ -16,7 +16,7 @@ public class UserListViewResponseDTO {
     private String gender;
     private String phoneNumber;
     private String address;
-    private List<Role> roles;
+    private Role roles;
     private int postCount;
     private int commentCount;
 

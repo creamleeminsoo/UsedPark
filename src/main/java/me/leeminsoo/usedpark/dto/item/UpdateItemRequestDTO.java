@@ -33,7 +33,7 @@ public class UpdateItemRequestDTO {
     private Long categoryId;
 
     @NotNull(message = "주소는 필수 선택입니다")
-    private List<Long> addressIds;
+    private Long addressId;
 
     private byte representativeImageIndex;
 }

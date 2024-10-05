@@ -41,7 +41,7 @@ public class ChatController {
 
         model.addAttribute("user", user);
         model.addAttribute("room", room);
-        return "/chat/chat";
+        return "chat/chat";
     }
     @GetMapping("/chat")
     public String getChatRooms(@AuthenticationPrincipal User user,Model model){
@@ -50,7 +50,7 @@ public class ChatController {
         model.addAttribute("rooms",chatRooms);
         model.addAttribute("user",user);
 
-        return "/chat/chatList";
+        return "chat/chatList";
     }
     @ResponseBody
     @DeleteMapping("/chat/{roomId}")

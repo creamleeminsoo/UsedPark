@@ -212,8 +212,7 @@
                 <p class="card-details-text" th:text="'브랜드: ' + ${item.brand}"></p>
                 <p id="cartCount" class="card-details-text" th:text="'장바구니: ' + ${item.cartCount}"></p>
                 <p class="card-details-text" th:text="'카테고리: ' + ${item.category.name}"></p>
-                <h5 class="card-details-title">지역</h5>
-                <p class="card-details-text" th:each="address : ${item.addresses}" th:text="${address.name} + ' '"></p>
+                <p class="card-details-text" th:text="'주소: ' + ${item.address.name}"></p>
             </div>
             <div class="col-buttons">
                 <button type="button" id="view-seller-user" class="btn btn-primary">판매자 정보보기</button>

@@ -16,7 +16,7 @@ import me.leeminsoo.usedpark.domain.user.User;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddPostRequestDTO {
-    @NotNull
+    @Size(min =1, max = 20)
     private String title;
 
     @Size(min = 1, max = 1000)

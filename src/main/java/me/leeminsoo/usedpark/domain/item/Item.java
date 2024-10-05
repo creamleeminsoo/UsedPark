@@ -60,31 +60,27 @@ public class Item {
     @OneToMany(mappedBy = "item",cascade = CascadeType.REMOVE)
     private List<Cart> carts;
 
-    @ManyToMany
-    @JoinTable(
-            name = "item_address",
-            joinColumns = @JoinColumn(name = "item_id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id")
-    )
-    private List<Address> addresses;
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     @Builder
-    public Item(String title,String brand,String price,User user,String content,Category category, List<Address> addresses){
+    public Item(String title,String brand,String price,User user,String content,Category category, Address address){
         this.title = title;
         this.brand = brand;
         this.price = price;
         this.user = user;
         this.content = content;
         this.category = category;
-        this.addresses = addresses;
+        this.address = address;
     }
 
-    public void update(String title,String brand,String price,String content,Category category, List<Address> addresses){
+    public void update(String title,String brand,String price,String content,Category category, Address address){
         this.title = title;
         this.brand = brand;
         this.content = content;
         this.category = category;
-        this.addresses = addresses;
+        this.address = address;
         this.price = price;
     }
     public void itemStatusUpdate(boolean itemStatus) {

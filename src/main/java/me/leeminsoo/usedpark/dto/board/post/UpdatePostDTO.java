@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdatePostDTO {
-    @NotNull
+    @Size(min = 1,max = 20)
     private String title;
     @Size(min = 1,max = 1000)
     private String content;

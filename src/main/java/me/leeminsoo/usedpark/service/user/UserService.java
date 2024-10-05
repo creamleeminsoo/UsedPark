@@ -38,7 +38,7 @@ public class UserService {
                 .gender(dto.getGender())
                 .phoneNumber(dto.getPhoneNumber())
                 .address(dto.getAddress())
-                 .roles(List.of(Role.USER))
+                 .roles(Role.USER)
                 .build());
     }
 

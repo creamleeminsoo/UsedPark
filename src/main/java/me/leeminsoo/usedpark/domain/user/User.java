@@ -13,8 +13,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Entity
@@ -65,27 +65,24 @@ public class User implements UserDetails {
     private List<Comment> comments;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    RefreshToken refreshToken;
+    private RefreshToken refreshToken;
 
     @Column(name = "roles")
     @Enumerated(EnumType.STRING)
-    private List<Role> roles;
+    private Role roles;
 
     public User(String email){
         this.email = email;
     }
 
     @Builder
-    public User(String email, String password, String nickname,String gender,String phoneNumber,String address,List<Role> roles) {
+    public User(String email, String password, String nickname,String gender,String phoneNumber,String address,Role roles) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        if(roles.contains(Role.ADMIN) && !roles.contains(Role.USER)){
-            roles.add(Role.USER);
-        }
         this.roles = roles;
 
     }
@@ -105,9 +102,8 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getValue()))
-                .collect(Collectors.toList());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(roles.getValue());
+        return Collections.singletonList(authority);
     }
 
 

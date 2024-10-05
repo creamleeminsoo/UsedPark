@@ -35,40 +35,30 @@ INSERT INTO category (name) VALUES('키즈');
 INSERT INTO category (name) VALUES('신발');
 INSERT INTO category (name) VALUES('라이프');
 
-INSERT INTO address (name) Values('부산 덕천동');
-INSERT INTO address (name) Values('서울 강남구');
-INSERT INTO address (name) Values('서울 노원구');
-INSERT INTO address (name) Values('서울 관악구');
-INSERT INTO address (name) Values('서울 은평구');
-INSERT INTO address (name) Values('서울 강동구');
-INSERT INTO address (name) Values('서울 양천구');
-INSERT INTO address (name) Values('서울 성북구');
-INSERT INTO address (name) Values('서울 서초구');
-INSERT INTO address (name) Values('서울 구로구');
-INSERT INTO address (name) Values('부산 북구동');
+INSERT INTO address (name) Values('부산');
+INSERT INTO address (name) Values('대전');
+INSERT INTO address (name) Values('서울');
+INSERT INTO address (name) Values('울산');
+INSERT INTO address (name) Values('제주');
+INSERT INTO address (name) Values('대구');
+INSERT INTO address (name) Values('광주');
+INSERT INTO address (name) Values('경남');
+INSERT INTO address (name) Values('경북');
+INSERT INTO address (name) Values('강원');
+INSERT INTO address (name) Values('전북');
+INSERT INTO address (name) Values('전남');
+INSERT INTO address (name) Values('경기');
 
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('아디다스 신발','아디다스','40000',3,NOW(),NOW(),'내고 불가',1);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('아디다스 반팔티','아디다스','40000',2,NOW(),NOW(),'내고 불가',1);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('아디다스 슬리퍼','아디다스','20000',2,NOW(),NOW(),'내고 불가',1);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('나이키 반팔티','나이키','30000',2,NOW(),NOW(),'내고 불가',1);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('나이키 슬리퍼','나이키','25000',2,NOW(),NOW(),'내고 불가',1);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('뉴발란스 반팔티','뉴발란스','20000',2,NOW(),NOW(),'내고 불가',1);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('뉴발란스 슬리퍼','뉴발란스','15000',1,NOW(),NOW(),'내고 불가',1);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('아이폰16','애플','120만원',1,NOW(),NOW(),'내고 불가',2);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('플립4','삼성','100만원',2,NOW(),NOW(),'내고 불가',2);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('갤럭시 s21','삼성','80만원',1,NOW(),NOW(),'내고 불가',2);
-INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id) VALUES ('갤럭시 폴드4','삼성','150만원',1,NOW(),NOW(),'내고 불가',2);
-
-INSERT INTO item_address(item_id, address_id) VALUES (1, 1);
-INSERT INTO item_address(item_id, address_id) VALUES (2, 1);
-INSERT INTO item_address(item_id, address_id) VALUES (3, 1);
-INSERT INTO item_address(item_id, address_id) VALUES (4, 1);
-INSERT INTO item_address(item_id, address_id) VALUES (5, 2);
-INSERT INTO item_address(item_id, address_id) VALUES (6, 2);
-INSERT INTO item_address(item_id, address_id) VALUES (7, 2);
-INSERT INTO item_address(item_id, address_id) VALUES (8, 2);
-INSERT INTO item_address(item_id, address_id) VALUES (9, 2);
-INSERT INTO item_address(item_id, address_id) VALUES (10, 2);
-
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('아디다스 신발','아디다스','40000',3,NOW(),NOW(),'내고 불가',1,1);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('아디다스 반팔티','아디다스','40000',2,NOW(),NOW(),'내고 불가',1,2);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('아디다스 슬리퍼','아디다스','20000',2,NOW(),NOW(),'내고 불가',1,3);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('나이키 반팔티','나이키','30000',2,NOW(),NOW(),'내고 불가',2,4);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('나이키 슬리퍼','나이키','25000',2,NOW(),NOW(),'내고 불가',1,3);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('뉴발란스 반팔티','뉴발란스','20000',2,NOW(),NOW(),'내고 불가',1,4);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('뉴발란스 슬리퍼','뉴발란스','15000',1,NOW(),NOW(),'내고 불가',1,6);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('아이폰16','애플','120만원',1,NOW(),NOW(),'내고 불가',2,5);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('플립4','삼성','100만원',2,NOW(),NOW(),'내고 불가',2,5);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('갤럭시 s21','삼성','80만원',1,NOW(),NOW(),'내고 불가',2,1);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('갤럭시 폴드4','삼성','150만원',1,NOW(),NOW(),'내고 불가',2,7);
 
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
     Page<Item> findByTitleContaining(String keyword,Pageable pageable);
-    Page<Item> findByAddresses_Id(Long addressId, Pageable pageable);
+    Page<Item> findByAddress_Id(Long addressId, Pageable pageable);
     Page<Item> findByCategoryId(Long categoryId, Pageable pageable);
     Page<Item> findByUserId(Long userId,Pageable pageable);
     long count();

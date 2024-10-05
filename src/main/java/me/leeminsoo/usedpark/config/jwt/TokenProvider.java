@@ -64,10 +64,9 @@ public class TokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
-        List<String> roles = claims.get("roles", List.class);
-        Set<SimpleGrantedAuthority> authorities = roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                .collect(Collectors.toSet());
+        String roles = claims.get("roles", String.class);
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + roles);
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(authority);
 
         UserDetails userDetails = customUserDetailService.loadUserByUsername(claims.getSubject());
 

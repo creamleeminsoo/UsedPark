@@ -21,7 +21,8 @@ public class Address {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy = "addresses")
-    @JsonIgnore
-    private List<Item> items;
+    public Address(String name){
+        this.name = name;
+    }
+
 }

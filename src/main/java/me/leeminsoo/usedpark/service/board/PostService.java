@@ -19,6 +19,7 @@ import me.leeminsoo.usedpark.dto.board.post.view.PostResponseDTO;
 import me.leeminsoo.usedpark.repository.board.BoardRepository;
 import me.leeminsoo.usedpark.repository.board.ImageRepository;
 import me.leeminsoo.usedpark.repository.board.PostRepository;
+import me.leeminsoo.usedpark.service.file.S3Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,9 +44,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final BoardRepository boardRepository;
+    private final S3Service s3Service;
 
-    @Value("${file.profileImagePath}")
-    private String uploadFolder;
 
     public List<Post> findAll() {
         return postRepository.findAll();
@@ -76,12 +76,11 @@ public class PostService {
     @Transactional
     public void delete(Long postId,User user) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        List<PostImage> images = imageRepository.findByPostId(postId);
+        this.deleteImage(images, postId);
         if(post.getUser().getId().equals(user.getId())) {
             postRepository.deleteById(postId);
         }else throw new AccessDeniedException("권한이 없습니다");
-        List<PostImage> images = imageRepository.findByPostId(postId);
-
-        this.deleteImage(images, postId);
 
     }
 
@@ -107,12 +106,11 @@ public class PostService {
     public Post update(Long postId, UpdatePostDTO dto, User user,List<MultipartFile> imageFiles) {
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        List<PostImage> images = imageRepository.findByPostId(postId);
+        deleteImage(images,postId);
         if (post.getUser().getId().equals(user.getId())) {
             post.update(dto.getTitle(), dto.getContent());
         } else throw new AccessDeniedException("권한이 없습니다");
-
-        List<PostImage> images = imageRepository.findByPostId(postId);
-        deleteImage(images,postId);
 
         if (imageFiles != null) {
             imageSave(imageFiles, post);
@@ -132,22 +130,17 @@ public class PostService {
 
     }
 
-    public void imageSave(List<MultipartFile> images,Post post) {
+    public void imageSave(List<MultipartFile> images, Post post) {
         if (images != null && !images.isEmpty()) {
             for (MultipartFile file : images) {
                 if (!isValidImageFile(file)) {
-                    throw new IllegalArgumentException("PNG또는 JPEG 확장자파일만 업로드 가능합니다");
+                    throw new IllegalArgumentException("PNG 또는 JPEG 파일만 업로드 가능합니다");
                 }
-                UUID uuid = UUID.randomUUID();
-                String imageFileName = uuid + "_" + file.getOriginalFilename();
-                File destinationFile = new File(uploadFolder + imageFileName);
 
-                try {
-                    file.transferTo(destinationFile);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                PostImage postImage = PostImage.builder().url("/postImage/" + imageFileName)
+                String imageUrl = s3Service.upload(file);
+
+                PostImage postImage = PostImage.builder()
+                        .url(imageUrl)
                         .post(post)
                         .build();
 
@@ -174,19 +167,14 @@ public class PostService {
         }
     }
 
-    public void deleteImage(List<PostImage> images,Long postId) {
+    public void deleteImage(List<PostImage> images, Long postId) {
         for (PostImage image : images) {
             String imagePath = image.getUrl();
             String fileName = imagePath.substring(imagePath.lastIndexOf('/') + 1);
-            Path filePath = Paths.get(uploadFolder, fileName);
 
-            File file = filePath.toFile();
             imageRepository.deleteByPostId(postId);
-            if (file.exists()) {
-                file.delete();
-            }
+            s3Service.delete(fileName);
         }
-
     }
 
     @Transactional

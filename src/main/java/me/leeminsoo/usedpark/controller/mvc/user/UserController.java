@@ -88,6 +88,6 @@ public class UserController {
 
     @GetMapping("/oauth2/callback")
     public String callback() {
-        return "/oauth2/callback";
+        return "oauth2/callback";
     }
 }

@@ -22,7 +22,7 @@ public class ItemResponseDTO {
     private String price;
     private User user;
     private Category category;
-    private List<Address> addresses;
+    private Address address;
     private String content;
     private int cartCount;
     private List<ItemImage> images;
@@ -34,7 +34,7 @@ public class ItemResponseDTO {
         this.price = item.getPrice();
         this.user = item.getUser();
         this.category = item.getCategory();
-        this.addresses = item.getAddresses();
+        this.address = item.getAddress();
         this.cartCount = cartCount;
         this.images = item.getImages();
         this.content = item.getContent();

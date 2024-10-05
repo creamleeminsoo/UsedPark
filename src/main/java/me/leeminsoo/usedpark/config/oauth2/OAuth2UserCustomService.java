@@ -51,13 +51,18 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
     private User saveOrUpdate(OAuth2MemberInfo memberInfo) {
 
         String email = memberInfo.getEmail();
-        String name = memberInfo.getName();
+        String name;
+        if (memberInfo.getName() != null) {
+            name = memberInfo.getName();
+        }else {
+            name = "임시 사용자";
+        }
         User user = userRepository.findByEmail(email)
                 .map(entity -> entity.update(name))
                 .orElse(User.builder()
                         .email(email)
                         .nickname(name)
-                        .roles(List.of(Role.USER))
+                        .roles(Role.USER)
                         .build());
 
         return userRepository.save(user);

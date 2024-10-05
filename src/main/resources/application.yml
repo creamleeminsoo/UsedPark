@@ -11,6 +11,8 @@ spring:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
+  datasource:
+    url: jdbc:h2:mem:testdb
   h2:
     console:
       enabled: true
@@ -19,8 +21,8 @@ spring:
       client:
         registration:
           google:
-            client-id: google_id
-            client-secret: google_secret
+            client-id: google-id
+            client-secret: google-secret
             scope:
               - email
               - profile
@@ -29,7 +31,7 @@ spring:
           kakao:
             client-id: kakaoid
             client-secret: kakaosecret
-            redirect-uri: http://springboot-developer-env.eba-gusjzjzw.ap-northeast-2.elasticbeanstalk.com/login/oauth2/code/kakao
+            redirect-uri: http://userpark-env.eba-fmwpsjez.ap-northeast-2.elasticbeanstalk.com/login/oauth2/code/kakao
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope:
@@ -47,11 +49,20 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-
-file:
-  profileImagePath: C:\Temp\profileImageUpload\
-
 jwt:
   issuer: dlalstn@gmail.com
   secret_key: jwt-key
+
+cloud:
+  aws:
+    s3:
+      bucket: used-park
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: access
+      secret-key: secret
+
 

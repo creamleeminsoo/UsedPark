@@ -1,5 +1,6 @@
 package me.leeminsoo.usedpark.service.item;
 
+import com.amazonaws.services.s3.AmazonS3;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.error.exception.notpound.CategoryNotFoundException;
@@ -17,6 +18,7 @@ import me.leeminsoo.usedpark.repository.item.AddressRepository;
 import me.leeminsoo.usedpark.repository.item.CategoryRepository;
 import me.leeminsoo.usedpark.repository.item.ItemImageRepository;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
+import me.leeminsoo.usedpark.service.file.S3Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,22 +44,19 @@ public class ItemService {
     private final ItemImageRepository itemImageRepository;
     private final CategoryRepository categoryRepository;
     private final AddressRepository addressRepository;
-
-
-    @Value("${file.profileImagePath}")
-    private String uploadFolder;
+    private final S3Service s3Service;
 
     @Transactional
     public Item save(AddItemRequestDTO dto, List<MultipartFile> imageFiles){
         Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("찾을수없는 카테고리입니다"));
-        List<Address> addresses = addressRepository.findAllById(dto.getAddressIds());
+        Address address = addressRepository.findById(dto.getAddressId()).orElseThrow(() -> new IllegalArgumentException("찾을수 없는 주소입니다"));
         Item item = Item.builder().title(dto.getTitle())
                     .brand(dto.getBrand())
                     .user(dto.getUser())
                     .content(dto.getContent())
                     .price(dto.getPrice())
                     .category(category)
-                    .addresses(addresses)
+                    .address(address)
                     .build();
             itemRepository.save(item);
             if (!(imageFiles == null)) {
@@ -69,12 +68,11 @@ public class ItemService {
     @Transactional
     public void delete(Long itemId, User user){
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
+        List<ItemImage>images = itemImageRepository.findByItemId(itemId);
+        this.deleteImage(images, itemId);
         if (item.getUser().getId().equals(user.getId())) {
             itemRepository.deleteById(itemId);
         }else throw new AccessDeniedException("권한이 없습니다 ");
-        List<ItemImage>images = itemImageRepository.findByItemId(itemId);
-        this.deleteImage(images, itemId);
-
     }
 
     public void imageSave(List<MultipartFile> images, Item item,byte representativeImageIndex) {
@@ -84,21 +82,11 @@ public class ItemService {
                 if (!isValidImageFile(file)) {
                     throw new IllegalArgumentException("PNG 또는 JPEG 확장자 파일만 업로드 가능합니다");
                 }
-
-                UUID uuid = UUID.randomUUID();
-                String imageFileName = uuid + "_" + file.getOriginalFilename();
-                File destinationFile = new File(uploadFolder + imageFileName);
-
-                try {
-                    file.transferTo(destinationFile);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
+                String imageUrl = s3Service.upload(file);
                 boolean representative = (i == representativeImageIndex);
 
                 ItemImage image = ItemImage.builder()
-                        .url("/itemImage/" + imageFileName)
+                        .url(imageUrl)
                         .item(item)
                         .isRepresentative(representative)
                         .build();
@@ -115,27 +103,22 @@ public class ItemService {
         for (ItemImage image : images) {
             String imagePath = image.getUrl();
             String fileName = imagePath.substring(imagePath.lastIndexOf('/') + 1);
-            Path filePath = Paths.get(uploadFolder, fileName);
 
-            File file = filePath.toFile();
             itemImageRepository.deleteByItemId(itemId);
-            if (file.exists()) {
-                file.delete();
-            }
+            s3Service.delete(fileName);
         }
 
     }
     @Transactional
     public Item update(Long itemId, UpdateItemRequestDTO dto,User user, List<MultipartFile> imageFiles) {
         Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
-        List<Address> addresses = addressRepository.findAllById(dto.getAddressIds());
-
+        Address address = addressRepository.findById(dto.getAddressId()).orElseThrow(() -> new IllegalArgumentException("주소를 찾을수 없습니다"));
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
-        if(item.getUser().getId().equals(user.getId())){
-            item.update(dto.getTitle(),dto.getBrand(),dto.getContent(),dto.getPrice(),category,addresses);
-        }else throw new AccessDeniedException("권한이 없습니다");
         List<ItemImage> images = itemImageRepository.findByItemId(itemId);
         this.deleteImage(images,itemId);
+        if(item.getUser().getId().equals(user.getId())){
+            item.update(dto.getTitle(),dto.getBrand(),dto.getContent(),dto.getPrice(),category,address);
+        }else throw new AccessDeniedException("권한이 없습니다");
         if (!(imageFiles == null)) {
             imageSave(imageFiles, item, dto.getRepresentativeImageIndex());
         }
@@ -145,7 +128,7 @@ public class ItemService {
         Pageable pageable = setPageable(order,page,size);
         Page<Item> items;
         if (addressId != null){
-            items = itemRepository.findByAddresses_Id(addressId,pageable);
+            items = itemRepository.findByAddress_Id(addressId,pageable);
         }else if (categoryId != null){
             items = itemRepository.findByCategoryId(categoryId,pageable);
         }else {

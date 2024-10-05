@@ -24,8 +24,4 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE) //카테고리 생성 삭제는 관리자만 가능하게 할것이므로
-    @JsonIgnore //순환참조 예외생길수있으므로 category객체만 가져올땐 item객체에 의존관계는 필요없음
-    private List<Item> items;
-
 }
