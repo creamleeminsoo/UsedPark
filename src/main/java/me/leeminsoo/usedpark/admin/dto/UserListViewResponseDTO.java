@@ -5,8 +5,6 @@ import lombok.Setter;
 import me.leeminsoo.usedpark.domain.user.Role;
 import me.leeminsoo.usedpark.domain.user.User;
 
-import java.util.List;
-
 @Getter
 @Setter
 public class UserListViewResponseDTO {

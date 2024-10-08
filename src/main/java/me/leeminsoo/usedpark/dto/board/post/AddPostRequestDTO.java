@@ -1,7 +1,6 @@
 package me.leeminsoo.usedpark.dto.board.post;
 
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

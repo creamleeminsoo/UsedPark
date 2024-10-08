@@ -1,4 +1,4 @@
-package me.leeminsoo.usedpark.repository.board;
+package me.leeminsoo.usedpark.repository.user;
 
 import me.leeminsoo.usedpark.domain.user.RefreshToken;
 import me.leeminsoo.usedpark.domain.user.User;

@@ -1,16 +1,15 @@
 package me.leeminsoo.usedpark.service.board;
 
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
 import me.leeminsoo.usedpark.config.error.exception.notpound.BoardNotFoundException;
 import me.leeminsoo.usedpark.config.error.exception.notpound.PostNotFoundException;
 import me.leeminsoo.usedpark.domain.board.Board;
 import me.leeminsoo.usedpark.domain.board.Post;
 import me.leeminsoo.usedpark.domain.board.PostImage;
 import me.leeminsoo.usedpark.domain.user.User;
-
 import me.leeminsoo.usedpark.dto.board.post.AddPostRequestDTO;
 import me.leeminsoo.usedpark.dto.board.post.UpdatePostDTO;
 import me.leeminsoo.usedpark.dto.board.post.view.PopularPostsResponseDTO;
@@ -20,7 +19,9 @@ import me.leeminsoo.usedpark.repository.board.BoardRepository;
 import me.leeminsoo.usedpark.repository.board.ImageRepository;
 import me.leeminsoo.usedpark.repository.board.PostRepository;
 import me.leeminsoo.usedpark.service.file.S3Service;
-import org.springframework.beans.factory.annotation.Value;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,12 +31,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -45,6 +41,9 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final BoardRepository boardRepository;
     private final S3Service s3Service;
+
+    @Autowired
+    private EntityManager entityManager;
 
 
     public List<Post> findAll() {
@@ -121,11 +120,19 @@ public class PostService {
     public Page<PostListViewResponseDTO> getPosts(Long boardId, String order, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.fromString(order), "id");
         Pageable pageable = PageRequest.of(page, size, sort);
+        SessionFactory sessionFactory = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+        Statistics statistics = sessionFactory.getStatistics();
+        statistics.clear();
+
         Page<Post> posts = postRepository.findByBoardId(pageable,boardId);
-        return posts.map(post -> {
+        Page<PostListViewResponseDTO> returnPost = posts.map(post -> {
             int likesCount = post.getLikes().size();
             return new PostListViewResponseDTO(post, likesCount);
         });
+
+        long queryCount = statistics.getPrepareStatementCount();
+        System.out.println(boardId+"번 게시판 조회시 쿼리 횟수" + queryCount);
+        return returnPost;
 
 
     }

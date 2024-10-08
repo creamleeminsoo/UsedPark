@@ -1,16 +1,12 @@
 package me.leeminsoo.usedpark.dto.board.post.view;
 
 
-
 import lombok.Builder;
 import lombok.Getter;
-
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import me.leeminsoo.usedpark.domain.board.Board;
 import me.leeminsoo.usedpark.domain.board.Comment;
 import me.leeminsoo.usedpark.domain.board.PostImage;
-
 
 import java.time.LocalDateTime;
 import java.util.List;

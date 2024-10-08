@@ -9,16 +9,13 @@ import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.jwt.TokenProvider;
 import me.leeminsoo.usedpark.domain.user.RefreshToken;
 import me.leeminsoo.usedpark.domain.user.User;
-import me.leeminsoo.usedpark.repository.board.RefreshTokenRepository;
+import me.leeminsoo.usedpark.repository.user.RefreshTokenRepository;
 import me.leeminsoo.usedpark.util.CookieUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;

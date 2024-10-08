@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.error.exception.InvalidInput.InvalidTokenException;
 import me.leeminsoo.usedpark.config.jwt.TokenProvider;
 import me.leeminsoo.usedpark.domain.user.User;
-import me.leeminsoo.usedpark.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;

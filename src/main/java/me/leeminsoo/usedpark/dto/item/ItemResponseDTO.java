@@ -26,6 +26,7 @@ public class ItemResponseDTO {
     private String content;
     private int cartCount;
     private List<ItemImage> images;
+    private boolean itemStatus;
 
     public ItemResponseDTO(Item item, int cartCount){
         this.id = item.getId();
@@ -38,5 +39,6 @@ public class ItemResponseDTO {
         this.cartCount = cartCount;
         this.images = item.getImages();
         this.content = item.getContent();
+        this.itemStatus = item.isItemStatus();
     }
 }

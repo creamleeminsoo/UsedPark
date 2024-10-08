@@ -82,12 +82,7 @@
     <script src="/js/util.js"></script>
 </head>
 <body>
-<div style="position: relative; display: inline-block;">
-    <span id="notificationCounter" class="notification-counter" style="display: none;">0</span>
-    <button id="notificationButton" onclick="openModal()" style="border: none; background: none;">
-        <img src="/img/Alarm.png" alt="알람 버튼">
-    </button>
-</div>
+
 <script>
     let notificationCount = 0;
             function openModal() {
@@ -116,6 +111,15 @@
 <nav class="navbar">
     <span class="navbar-brand mb-0" th:if="${item.id == null}">유즈드 파크 - 상품 등록</span>
     <span class="navbar-brand mb-0" th:if="${item.id != null}">유즈드 파크 - 상품 수정</span>
+    <div style="position: relative; display: inline-block;">
+        <span id="notificationCounter" class="notification-counter" style="display: none;">0</span>
+        <button id="notificationButton" onclick="openModal()" style="border: none; background: none;">
+            <img src="/img/Alarm.png" alt="알람 버튼">
+        </button>
+    </div>
+    <a href="/">
+        <img src="/img/Home.png" alt="홈페이지">
+    </a>
 </nav>
 
 <div class="container">
@@ -129,7 +133,7 @@
     </div>
 
     <div class="form-group">
-        <label for="address" class="form-label">카테고리</label>
+        <label for="address" class="form-label">주소</label>
         <select id="address" name="addressId" class="form-control">
             <option value="">선택</option>
         </select>
@@ -248,10 +252,11 @@
                 .catch(error => console.error('Error loading addresses:', error));
         }
 
-        window.onload = function() {
+        document.addEventListener("DOMContentLoaded", function() {
             loadCategories();
             loadAddresses();
-        };
+        });
+
 
         $('#submitBtn').click(function() {
             const title = $('#title').val();

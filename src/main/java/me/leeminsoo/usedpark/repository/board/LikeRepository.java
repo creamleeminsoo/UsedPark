@@ -1,6 +1,5 @@
 package me.leeminsoo.usedpark.repository.board;
 
-import jakarta.transaction.Transactional;
 import me.leeminsoo.usedpark.domain.board.Post;
 import me.leeminsoo.usedpark.domain.board.PostLike;
 import me.leeminsoo.usedpark.domain.user.User;
@@ -14,10 +13,10 @@ public interface LikeRepository extends JpaRepository<PostLike ,Long> {
     boolean existsByPostAndUser(Post post, User user);
 
     @Modifying
-    @Query(value = "INSERT INTO likes (post_id, user_id) VALUES (:postId, :userId)", nativeQuery = true)
+    @Query(value = "INSERT INTO likes (post_id, user_id) VALUES (:postId, :userId)", nativeQuery = true) // 삽입연산은 Native Query 사용
     void addLike(@Param("postId") Long postId, @Param("userId") Long userId);
 
-    @Query(value = "SELECT COUNT(*) FROM likes WHERE post_id = :postId", nativeQuery = true)
+    @Query("SELECT COUNT(l) FROM PostLike l WHERE l.post.id = :postId")
     int countLikesByPostId(@Param("postId") Long postId);
 
 

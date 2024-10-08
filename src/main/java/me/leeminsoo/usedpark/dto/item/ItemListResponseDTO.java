@@ -1,14 +1,15 @@
 package me.leeminsoo.usedpark.dto.item;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import me.leeminsoo.usedpark.domain.item.Address;
 import me.leeminsoo.usedpark.domain.item.Category;
 import me.leeminsoo.usedpark.domain.item.Item;
 import me.leeminsoo.usedpark.domain.item.ItemImage;
 import me.leeminsoo.usedpark.domain.user.User;
-
-import java.util.List;
 
 @Getter
 @Setter

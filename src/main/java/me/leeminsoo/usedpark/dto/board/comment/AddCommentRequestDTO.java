@@ -1,13 +1,10 @@
 package me.leeminsoo.usedpark.dto.board.comment;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import me.leeminsoo.usedpark.domain.board.Comment;
-import me.leeminsoo.usedpark.domain.board.Post;
 import me.leeminsoo.usedpark.domain.user.User;
 
 @Getter

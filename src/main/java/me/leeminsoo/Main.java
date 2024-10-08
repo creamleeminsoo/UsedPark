@@ -1,7 +1,5 @@
 package me.leeminsoo;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {

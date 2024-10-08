@@ -32,7 +32,7 @@ public class Item {
     @Column(name = "price")
     private String price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -50,7 +50,7 @@ public class Item {
     @Column(name = "item_status",columnDefinition = "boolean default true")
     private boolean itemStatus = true;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 

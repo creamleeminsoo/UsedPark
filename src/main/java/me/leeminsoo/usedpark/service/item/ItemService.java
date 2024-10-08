@@ -1,6 +1,5 @@
 package me.leeminsoo.usedpark.service.item;
 
-import com.amazonaws.services.s3.AmazonS3;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.error.exception.notpound.CategoryNotFoundException;
@@ -19,7 +18,6 @@ import me.leeminsoo.usedpark.repository.item.CategoryRepository;
 import me.leeminsoo.usedpark.repository.item.ItemImageRepository;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import me.leeminsoo.usedpark.service.file.S3Service;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +27,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service

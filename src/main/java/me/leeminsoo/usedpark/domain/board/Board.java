@@ -16,7 +16,6 @@ public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "id",updatable = false)
     private Long id;
 

@@ -66,7 +66,7 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostLike> likes;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -77,6 +77,7 @@ public class Post {
         this.board = board;
         this.user = user;
     }
+
 
 
 

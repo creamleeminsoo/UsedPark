@@ -64,7 +64,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
     @Column(name = "roles")
@@ -73,6 +73,10 @@ public class User implements UserDetails {
 
     public User(String email){
         this.email = email;
+    }
+    public User(String email,String nickname){
+        this.email = email;
+        this.nickname = nickname;
     }
 
     @Builder

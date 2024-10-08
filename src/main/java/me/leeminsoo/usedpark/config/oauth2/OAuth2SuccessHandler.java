@@ -7,7 +7,7 @@ import org.springframework.security.access.AccessDeniedException;
 import me.leeminsoo.usedpark.config.jwt.TokenProvider;
 import me.leeminsoo.usedpark.domain.user.RefreshToken;
 import me.leeminsoo.usedpark.domain.user.User;
-import me.leeminsoo.usedpark.repository.board.RefreshTokenRepository;
+import me.leeminsoo.usedpark.repository.user.RefreshTokenRepository;
 import me.leeminsoo.usedpark.service.user.UserService;
 import me.leeminsoo.usedpark.util.CookieUtil;
 import org.springframework.security.core.Authentication;

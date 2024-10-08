@@ -11,7 +11,6 @@ import me.leeminsoo.usedpark.dto.user.UpdateUserRequestDTO;
 import me.leeminsoo.usedpark.dto.user.UserResponse;
 import me.leeminsoo.usedpark.service.user.UserService;
 import me.leeminsoo.usedpark.util.CookieUtil;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +19,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 
 @Controller

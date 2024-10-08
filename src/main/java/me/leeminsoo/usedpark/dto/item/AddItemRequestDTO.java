@@ -6,12 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import me.leeminsoo.usedpark.domain.item.Address;
-import me.leeminsoo.usedpark.domain.item.Category;
 import me.leeminsoo.usedpark.domain.user.User;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
-import java.util.List;
 
 
 @Getter

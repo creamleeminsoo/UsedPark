@@ -178,7 +178,8 @@ INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,categor
 INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUES ('첫번째글', '내용', NOW(), NOW(),1,3);
 select * from item;
 select * from users;
-select * from post;]]></console>
+select * from post;
+select @@AUTOCOMMIT;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

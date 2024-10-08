@@ -3,8 +3,8 @@ package me.leeminsoo.usedpark.controller.api.post;
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.domain.board.Comment;
 import me.leeminsoo.usedpark.domain.user.User;
-import me.leeminsoo.usedpark.dto.board.comment.*;
 import me.leeminsoo.usedpark.dto.board.comment.AddCommentRequestDTO;
+import me.leeminsoo.usedpark.dto.board.comment.UpdateCommentDTO;
 import me.leeminsoo.usedpark.service.board.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 

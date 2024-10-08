@@ -5,11 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import me.leeminsoo.usedpark.domain.item.Address;
-import me.leeminsoo.usedpark.domain.item.Category;
 import me.leeminsoo.usedpark.domain.user.User;
-
-import java.util.List;
 
 @Getter
 @Setter

@@ -157,8 +157,14 @@
 <input type="hidden" id="itemTitle" th:value="${item.title}">
 <nav class="navbar">
     <span class="navbar-brand mb-0">유즈드 파크</span>
+    <a href="/">
+        <img src="/img/Home.png" alt="홈페이지">
+    </a>
 </nav>
 <div class="container">
+    <div th:if="${!item.itemStatus}" style="text-align: center; margin-top: 20px;">
+        <h1 style="color: red; font-size: 48px; font-weight: bold;">판매 완료</h1>
+    </div>
     <div style="position: relative; display: inline-block;">
         <span id="notificationCounter" class="notification-counter" style="display: none;">0</span>
         <button id="notificationButton" onclick="openModal()" style="border: none; background: none;">
@@ -214,7 +220,7 @@
                 <p class="card-details-text" th:text="'카테고리: ' + ${item.category.name}"></p>
                 <p class="card-details-text" th:text="'주소: ' + ${item.address.name}"></p>
             </div>
-            <div class="col-buttons">
+            <div class="col-buttons" th:if="${item.itemStatus}">
                 <button type="button" id="view-seller-user" class="btn btn-primary">판매자 정보보기</button>
                 <button type="button" id="addCartBtn" style="background-color:#B8C6F6; color: black;" class="btn btn-primary">찜하기</button>
                 <button type="button" id="chatBtn" class="btn btn-chat">판매자와 채팅하기</button>
