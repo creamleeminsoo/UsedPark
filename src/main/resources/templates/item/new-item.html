@@ -96,8 +96,37 @@
                 document.getElementById("notificationModal").style.display = "none";
             }
 
-    document.addEventListener("DOMContentLoaded", function() {
+            function loadCategories() {
+                fetch('/api/categories')
+                    .then(response => response.json())
+                    .then(data => {
+                        const categorySelect = $('#category');
+                        categorySelect.empty().append('<option value="">선택</option>');
+                        data.forEach(category => {
+                            categorySelect.append(`<option value="${category.id}">${category.name}</option>`);
+                        });
+                    })
+                    .catch(error => console.error('Error loading categories:', error));
+            }
+
+            function loadAddresses() {
+                fetch('/api/addresses')
+                    .then(response => response.json())
+                    .then(data => {
+                        const addressSelect = $('#address');
+                        addressSelect.empty();
+                        data.forEach(address => {
+                            addressSelect.append(`<option value="${address.id}">${address.name}</option>`);
+                        });
+                    })
+                    .catch(error => console.error('Error loading addresses:', error));
+            }
+
+
+            document.addEventListener("DOMContentLoaded", function() {
                 initializeSSE();
+                loadCategories();
+                loadAddresses();
             });
 </script>
 
@@ -133,7 +162,7 @@
     </div>
 
     <div class="form-group">
-        <label for="address" class="form-label">주소</label>
+        <label for="address" class="form-label">카테고리</label>
         <select id="address" name="addressId" class="form-control">
             <option value="">선택</option>
         </select>
@@ -226,37 +255,6 @@
     }
 
     $(document).ready(function() {
-        function loadCategories() {
-            fetch('/api/categories')
-                .then(response => response.json())
-                .then(data => {
-                    const categorySelect = $('#category');
-                    categorySelect.empty().append('<option value="">선택</option>');
-                    data.forEach(category => {
-                        categorySelect.append(`<option value="${category.id}">${category.name}</option>`);
-                    });
-                })
-                .catch(error => console.error('Error loading categories:', error));
-        }
-
-        function loadAddresses() {
-            fetch('/api/addresses')
-                .then(response => response.json())
-                .then(data => {
-                    const addressSelect = $('#address');
-                    addressSelect.empty();
-                    data.forEach(address => {
-                        addressSelect.append(`<option value="${address.id}">${address.name}</option>`);
-                    });
-                })
-                .catch(error => console.error('Error loading addresses:', error));
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            loadCategories();
-            loadAddresses();
-        });
-
 
         $('#submitBtn').click(function() {
             const title = $('#title').val();
@@ -339,6 +337,7 @@
             httpRequest('PUT', `/api/items/${itemId}`, formData, success, fail);
         });
     });
+
 </script>
 </body>
 </html>
