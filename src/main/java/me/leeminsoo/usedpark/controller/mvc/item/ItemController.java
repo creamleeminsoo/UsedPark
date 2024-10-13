@@ -21,7 +21,7 @@ public class ItemController {
     @GetMapping("/items")
     public String getItems(@RequestParam(name = "order",defaultValue = "desc") String order,
                            @RequestParam(name = "page",defaultValue = "0") int page,
-                           @RequestParam(name = "size",defaultValue = "10") int size,
+                           @RequestParam(name = "size",defaultValue = "20") int size,
                            @RequestParam(name = "keyword",required = false) String keyword,
                            @RequestParam(name = "address",required = false) Long addressId,
                            @RequestParam(name = "category",required = false) Long categoryId,

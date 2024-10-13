@@ -64,9 +64,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private RefreshToken refreshToken;
-
     @Column(name = "roles")
     @Enumerated(EnumType.STRING)
     private Role roles;

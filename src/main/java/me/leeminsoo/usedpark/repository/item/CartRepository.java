@@ -3,6 +3,7 @@ package me.leeminsoo.usedpark.repository.item;
 import me.leeminsoo.usedpark.domain.item.Cart;
 import me.leeminsoo.usedpark.domain.item.Item;
 import me.leeminsoo.usedpark.domain.user.User;
+import me.leeminsoo.usedpark.dto.item.ItemListResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,8 +24,30 @@ public interface CartRepository extends JpaRepository<Cart,Long> {
     @Query(value = "SELECT COUNT(*) FROM Cart WHERE item.id = :itemId")
     int countCartsByItemId(@Param("itemId") Long itemId);
 
-    @Query("SELECT i FROM Item i JOIN Cart c ON i.id = c.item.id WHERE c.user.id = :userId") // List<cart>로 맵핑 문제생겨서 JPQL 사용 쿼리 결과를 JPA가 자동으로 엔티티에 매핑
-    List<Item> findItemsByUserId(@Param("userId") Long userId);
+//    @Query("SELECT DISTINCT i FROM Item i " +
+//            "JOIN FETCH i.category " +
+//            "JOIN FETCH i.address " +
+//            "JOIN FETCH i.user " +
+//            "JOIN FETCH i.carts c " +
+//            "WHERE c.user.id = :userId") // 쿼리 나누기
+//    List<Item> findItemsInCartByUser(@Param("userId") Long userId);
+
+    @Query("SELECT new me.leeminsoo.usedpark.dto.item.ItemListResponseDTO(i, size(i.carts), img) FROM Item i " +
+            "JOIN FETCH i.category c " +
+            "JOIN FETCH i.address a " +
+            "JOIN FETCH i.user u " +
+            "LEFT JOIN i.images img " +
+            "WHERE (img.isRepresentative = true OR img IS NULL) AND i.id IN (" +
+            "SELECT cart.item.id FROM Cart cart WHERE cart.user.id = :userId)") // 한방쿼리
+    List<ItemListResponseDTO> findItemsInCartByUser(@Param("userId") Long userId);
+
+
+
+
+
+
+
+
 
 
 

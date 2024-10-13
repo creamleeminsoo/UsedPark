@@ -28,7 +28,7 @@ public class ItemListResponseDTO {
     private ItemImage image;
     private boolean itemStatus;
 
-    public ItemListResponseDTO(Item item,int cartCount,ItemImage image){
+    public ItemListResponseDTO(Item item,int cartCount,ItemImage representativeImage){
         this.id = item.getId();
         this.title = item.getTitle();
         this.brand = item.getBrand();
@@ -37,7 +37,21 @@ public class ItemListResponseDTO {
         this.category = item.getCategory();
         this.address = item.getAddress();
         this.cartCount = cartCount;
-        this.image = image;
+        this.image = representativeImage;
         this.itemStatus = item.isItemStatus();
     }
+
+    public ItemListResponseDTO(Item item,ItemImage representativeImage){
+        this.id = item.getId();
+        this.title = item.getTitle();
+        this.brand = item.getBrand();
+        this.price = item.getPrice();
+        this.user = item.getUser();
+        this.category = item.getCategory();
+        this.address = item.getAddress();
+        this.cartCount = item.getCarts().size();
+        this.image = representativeImage;
+        this.itemStatus = item.isItemStatus();
+    }
+
 }

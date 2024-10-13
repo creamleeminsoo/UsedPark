@@ -39,6 +39,8 @@ public class ItemService {
     private final AddressRepository addressRepository;
     private final S3Service s3Service;
 
+
+
     @Transactional
     public Item save(AddItemRequestDTO dto, List<MultipartFile> imageFiles){
         Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("찾을수없는 카테고리입니다"));
@@ -62,8 +64,8 @@ public class ItemService {
     public void delete(Long itemId, User user){
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         List<ItemImage>images = itemImageRepository.findByItemId(itemId);
-        this.deleteImage(images, itemId);
         if (item.getUser().getId().equals(user.getId())) {
+            this.deleteImage(images, itemId);
             itemRepository.deleteById(itemId);
         }else throw new AccessDeniedException("권한이 없습니다 ");
     }
@@ -108,8 +110,8 @@ public class ItemService {
         Address address = addressRepository.findById(dto.getAddressId()).orElseThrow(() -> new IllegalArgumentException("주소를 찾을수 없습니다"));
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         List<ItemImage> images = itemImageRepository.findByItemId(itemId);
-        this.deleteImage(images,itemId);
         if(item.getUser().getId().equals(user.getId())){
+            this.deleteImage(images,itemId);
             item.update(dto.getTitle(),dto.getBrand(),dto.getContent(),dto.getPrice(),category,address);
         }else throw new AccessDeniedException("권한이 없습니다");
         if (!(imageFiles == null)) {
@@ -117,25 +119,20 @@ public class ItemService {
         }
         return item;
     }
-    public Page<ItemListResponseDTO> getItems(String order, int page, int size,Long addressId,Long categoryId){
-        Pageable pageable = setPageable(order,page,size);
-        Page<Item> items;
-        if (addressId != null){
-            items = itemRepository.findByAddress_Id(addressId,pageable);
-        }else if (categoryId != null){
-            items = itemRepository.findByCategoryId(categoryId,pageable);
-        }else {
-            items = itemRepository.findAll(pageable);
+
+    public Page<ItemListResponseDTO> getItems(String order, int page, int size, Long addressId, Long categoryId) {
+        Pageable pageable = setPageable(order, page, size);
+        Page<ItemListResponseDTO> items;
+        if (addressId != null) {
+            items = itemRepository.findByAddressWithRepresentativeImage(addressId, pageable);
+        } else if (categoryId != null) {
+            items = itemRepository.findByCategoryWithRepresentativeImage(categoryId, pageable);
+        } else {
+            items = itemRepository.findAllWithRepresentativeImage(pageable);
         }
-        return items.map(item -> {
-            int cartCount = item.getCarts().size();
-            ItemImage representativeImage = item.getImages().stream()
-                    .filter(ItemImage::isRepresentative)
-                    .findFirst()
-                    .orElse(null);
-            return new ItemListResponseDTO(item,cartCount,representativeImage);
-        });
+        return items;
     }
+
 
     public Page<ItemListResponseDTO> searchItems(String order,int page, int size, String keyword){
         Pageable pageable = setPageable(order,page,size);
@@ -143,10 +140,7 @@ public class ItemService {
 
         return items.map(item -> {
             int cartCount = item.getCarts().size();
-            ItemImage representativeImage = item.getImages().stream()
-                    .filter(ItemImage::isRepresentative)
-                    .findFirst()
-                    .orElse(null);
+            ItemImage representativeImage = itemImageRepository.findByItemIdAndIsRepresentativeTrue(item.getId());
             return new ItemListResponseDTO(item,cartCount,representativeImage);
         });
     }
@@ -171,18 +165,9 @@ public class ItemService {
 
     public Page<ItemListResponseDTO> getItemByUserId(Long userId,String order,int page,int size) {
         Pageable pageable = setPageable(order,page,size);
-        Page<Item> items = itemRepository.findByUserId(userId,pageable);
-
-        return items.map(item -> {
-            int cartCount = item.getCarts().size();
-            ItemImage representativeImage = item.getImages().stream()
-                    .filter(ItemImage::isRepresentative)
-                    .findFirst()
-                    .orElse(null);
-            return new ItemListResponseDTO(item,cartCount,representativeImage);
-        });
-
+        return itemRepository.findAllWithRepresentativeImageByUserId(userId,pageable);
     }
+
     @Transactional
     public void updateItemStatus(Long itemId, User user) {
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
@@ -193,14 +178,8 @@ public class ItemService {
         }
     }
     public List<ItemListResponseDTO> getRecentItems(){
-        List<Item> items = itemRepository.findTop6ByOrderByCreatedAtDesc();
-        return items.stream().map(item -> {
-            int cartCount = item.getCarts().size();
-            ItemImage representativeImage = item.getImages().stream()
-                    .filter(ItemImage::isRepresentative)
-                    .findFirst()
-                    .orElse(null);
-            return new ItemListResponseDTO(item,cartCount,representativeImage);
-        }).toList();
+
+        Pageable pageable = PageRequest.of(0,6);
+        return itemRepository.findTop6RecentItems(pageable);
     }
 }

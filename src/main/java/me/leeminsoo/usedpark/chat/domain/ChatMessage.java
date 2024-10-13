@@ -28,7 +28,7 @@ public class ChatMessage {
     @Column(name = "send_time",updatable = false)
     private LocalDateTime sendTime;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private ChatRoom room;
 

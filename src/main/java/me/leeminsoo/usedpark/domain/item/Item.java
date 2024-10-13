@@ -32,7 +32,7 @@ public class Item {
     @Column(name = "price")
     private String price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -50,7 +50,7 @@ public class Item {
     @Column(name = "item_status",columnDefinition = "boolean default true")
     private boolean itemStatus = true;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -60,7 +60,7 @@ public class Item {
     @OneToMany(mappedBy = "item",cascade = CascadeType.REMOVE)
     private List<Cart> carts;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;
 

@@ -19,7 +19,7 @@ public class ItemImage {
     @Column(name = "url",nullable = false)
     private String url;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     Item item;
 

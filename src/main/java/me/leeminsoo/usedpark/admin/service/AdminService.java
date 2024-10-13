@@ -2,6 +2,7 @@ package me.leeminsoo.usedpark.admin.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.leeminsoo.usedpark.admin.dto.AddBoardRequestDTO;
 import me.leeminsoo.usedpark.admin.dto.AdminViewResponseDTO;
 
@@ -19,6 +20,7 @@ import me.leeminsoo.usedpark.dto.item.ItemListResponseDTO;
 import me.leeminsoo.usedpark.repository.board.BoardRepository;
 import me.leeminsoo.usedpark.repository.board.CommentRepository;
 import me.leeminsoo.usedpark.repository.board.PostRepository;
+import me.leeminsoo.usedpark.repository.item.ItemImageRepository;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import me.leeminsoo.usedpark.repository.user.UserRepository;
 import org.springframework.dao.DataAccessException;
@@ -29,11 +31,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AdminService {
@@ -43,7 +43,6 @@ public class AdminService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final ItemRepository itemRepository;
-    private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
     @Transactional(readOnly = true)
     public AdminViewResponseDTO getAdminViewData () {
@@ -108,15 +107,7 @@ public class AdminService {
     }
     public Page<ItemListResponseDTO> findAllItems(String order,int page,int size) {
         Pageable pageable = setPageable(order,page,size);
-        Page<Item> items = itemRepository.findAll(pageable);
-        return items.map(item -> {
-            int cartCount = item.getCarts().size();
-            ItemImage representativeImage = item.getImages().stream()
-                    .filter(ItemImage::isRepresentative)
-                    .findFirst()
-                    .orElse(null);
-            return new ItemListResponseDTO(item,cartCount,representativeImage);
-        });
+        return itemRepository.findAllWithRepresentativeImage(pageable);
 
     }
     public Page<ItemListResponseDTO> searchItems(String order,int page,int size,String keyword,String type){
@@ -145,9 +136,9 @@ public class AdminService {
     public void deletePost(Long postId, User user){
         try {
             postRepository.deleteById(postId);
-            logger.info("Post with ID {} was deleted by admin with user Email {}", postId, user.getEmail());
+            log.info("Post with ID {} was deleted by admin with user Email {}", postId, user.getEmail());
         }catch (EmptyResultDataAccessException e){
-            logger.error("Error occurred while admin with user Email {} tried to delete post with ID {}", user.getEmail(), postId, e);
+            log.error("Error occurred while admin with user Email {} tried to delete post with ID {}", user.getEmail(), postId, e);
             throw new PostNotFoundException();
         }
     }
@@ -155,9 +146,9 @@ public class AdminService {
     public void deleteUser(Long userId,User user) {
         try {
             userRepository.deleteById(userId);
-            logger.info("User with ID {} was deleted by admin with user Email {}", userId, user.getEmail());
+            log.info("User with ID {} was deleted by admin with user Email {}", userId, user.getEmail());
         }catch (EmptyResultDataAccessException e){
-            logger.error("Error occurred while admin with user Email {} tried to delete user with ID {}", user.getEmail(), userId, e);
+            log.error("Error occurred while admin with user Email {} tried to delete user with ID {}", user.getEmail(), userId, e);
             throw new UserNotFoundException();
         }
     }
@@ -165,9 +156,9 @@ public class AdminService {
     public void deleteItem(Long itemId,User user) {
         try{
             itemRepository.deleteById(itemId);
-            logger.info("Item with ID {} was deleted by admin with user Email {}", itemId, user.getEmail());
+            log.info("Item with ID {} was deleted by admin with user Email {}", itemId, user.getEmail());
         }catch (EmptyResultDataAccessException e){
-            logger.error("Error occurred while admin with user Email {} tried to delete item with ID {}", user.getEmail(), itemId, e);
+            log.error("Error occurred while admin with user Email {} tried to delete item with ID {}", user.getEmail(), itemId, e);
             throw new ItemNotFoundException();
     }
     }

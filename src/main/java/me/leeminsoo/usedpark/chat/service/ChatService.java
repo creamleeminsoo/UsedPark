@@ -1,19 +1,23 @@
 package me.leeminsoo.usedpark.chat.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import me.leeminsoo.usedpark.config.error.exception.notpound.ChatRoomNotFoundException;
-import me.leeminsoo.usedpark.config.error.exception.notpound.ItemNotFoundException;
 import me.leeminsoo.usedpark.chat.domain.ChatMessage;
 import me.leeminsoo.usedpark.chat.domain.ChatRoom;
-import me.leeminsoo.usedpark.domain.item.Item;
-import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.chat.dto.ChatMessageDTO;
 import me.leeminsoo.usedpark.chat.dto.ChatRoomRequest;
 import me.leeminsoo.usedpark.chat.repository.ChatMessageRepository;
 import me.leeminsoo.usedpark.chat.repository.ChatRoomRepository;
+import me.leeminsoo.usedpark.config.error.exception.notpound.ChatRoomNotFoundException;
+import me.leeminsoo.usedpark.config.error.exception.notpound.ItemNotFoundException;
+import me.leeminsoo.usedpark.domain.item.Item;
+import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import me.leeminsoo.usedpark.repository.user.UserRepository;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +34,10 @@ public class ChatService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private EntityManager entityManager;
+
 
     @Transactional
     public ChatRoom createRoom(ChatRoomRequest request) {
@@ -60,9 +68,10 @@ public class ChatService {
         chatMessageRepository.deleteBySendTimeBefore(oneWeekAgo);
     }
 
-
+    @Transactional
     public ChatMessageDTO createChat(Long roomId, ChatMessageDTO dto){
-        ChatRoom room = chatRoomRepository.findById(roomId).orElseThrow(ChatRoomNotFoundException::new);
+
+        ChatRoom room = entityManager.getReference(ChatRoom.class, roomId);
         ChatMessage message = ChatMessage.builder()
                 .sender(dto.getSender())
                 .message(dto.getMessage())

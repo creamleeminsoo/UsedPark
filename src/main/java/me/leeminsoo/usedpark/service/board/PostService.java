@@ -56,11 +56,14 @@ public class PostService {
     }
     public PostResponseDTO getPost(Long postId) {
 
-        Post post = postRepository.findById(postId)
+        SessionFactory sessionFactory = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+        Statistics statistics = sessionFactory.getStatistics();
+        statistics.clear();
+        System.out.println("******게시글 하나 조회 (댓글 5개, 좋아요 3개)******");
+        Post post = postRepository.findByIdWithFetchJoin(postId)
                 .orElseThrow(PostNotFoundException::new);
 
-
-        return PostResponseDTO.builder().id(post.getId())
+        PostResponseDTO responseDTO = PostResponseDTO.builder().id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .comments(post.getComments())
@@ -70,14 +73,18 @@ public class PostService {
                 .createdAt(post.getCreatedAt())
                 .likeCount(post.getLikes().size())
                 .build();
+        long queryCount = statistics.getPrepareStatementCount();
+        System.out.println("게시글 하나 조회할시 쿼리 (댓글 5개, 좋아요 3개) = " + queryCount);
+
+        return responseDTO;
     }
 
     @Transactional
     public void delete(Long postId,User user) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         List<PostImage> images = imageRepository.findByPostId(postId);
-        this.deleteImage(images, postId);
         if(post.getUser().getId().equals(user.getId())) {
+            this.deleteImage(images, postId);
             postRepository.deleteById(postId);
         }else throw new AccessDeniedException("권한이 없습니다");
 
@@ -106,8 +113,8 @@ public class PostService {
 
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         List<PostImage> images = imageRepository.findByPostId(postId);
-        deleteImage(images,postId);
         if (post.getUser().getId().equals(user.getId())) {
+            this.deleteImage(images,postId);
             post.update(dto.getTitle(), dto.getContent());
         } else throw new AccessDeniedException("권한이 없습니다");
 
@@ -120,21 +127,12 @@ public class PostService {
     public Page<PostListViewResponseDTO> getPosts(Long boardId, String order, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.fromString(order), "id");
         Pageable pageable = PageRequest.of(page, size, sort);
-        SessionFactory sessionFactory = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
-        Statistics statistics = sessionFactory.getStatistics();
-        statistics.clear();
 
         Page<Post> posts = postRepository.findByBoardId(pageable,boardId);
-        Page<PostListViewResponseDTO> returnPost = posts.map(post -> {
+        return posts.map(post -> {
             int likesCount = post.getLikes().size();
             return new PostListViewResponseDTO(post, likesCount);
         });
-
-        long queryCount = statistics.getPrepareStatementCount();
-        System.out.println(boardId+"번 게시판 조회시 쿼리 횟수" + queryCount);
-        return returnPost;
-
-
     }
 
     public void imageSave(List<MultipartFile> images, Post post) {
@@ -223,7 +221,7 @@ public class PostService {
 
     }
     public List<PopularPostsResponseDTO> getPopularPosts(){
-        Pageable topTen = PageRequest.of(0, 5); // JPQL에선 LIMIT키워드를 사용할수없으므로 Pageable인터페이스로 10개의 글만 가져오도록 설정
+        Pageable topTen = PageRequest.of(0, 5); // JPQL에선 LIMIT키워드를 사용할수없으므로 Pageable인터페이스로 5개의 글만 가져오도록 설정
         List<Post> posts = postRepository.findTopPostsOrderByLikes(topTen);
 
         return posts.stream().map(post -> {

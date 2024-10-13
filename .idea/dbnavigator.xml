@@ -179,7 +179,10 @@ INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUE
 select * from item;
 select * from users;
 select * from post;
-select @@AUTOCOMMIT;]]></console>
+
+ALTER TABLE chat_message
+ADD CONSTRAINT fk_room_id
+FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

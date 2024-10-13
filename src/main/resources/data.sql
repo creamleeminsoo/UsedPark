@@ -24,19 +24,14 @@ INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUE
 INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUES ('다섯번째글', '내용', NOW(), NOW(),1,1);
 INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUES ('여섯번째글', '내용', NOW(), NOW(),1,2);
 INSERT INTO post (title, content, created_at, updated_at,board_id,user_id) VALUES ('다섯번째글', '내용', NOW(), NOW(),1,2);
-INSERT INTO comments (post_id, content, created_at) VALUES (1,'댓글',NOW());
-INSERT INTO likes (post_id,user_id) VALUES (4,1);
-INSERT INTO likes (post_id,user_id) VALUES (4,2);
-INSERT INTO likes (post_id,user_id) VALUES (4,3);
-INSERT INTO likes (post_id,user_id) VALUES (5,1);
-INSERT INTO likes (post_id,user_id) VALUES (5,2);
-INSERT INTO likes (post_id,user_id) VALUES (5,3);
-INSERT INTO likes (post_id,user_id) VALUES (6,1);
-INSERT INTO likes (post_id,user_id) VALUES (6,2);
-INSERT INTO likes (post_id,user_id) VALUES (6,3);
-INSERT INTO likes (post_id,user_id) VALUES (7,1);
-INSERT INTO likes (post_id,user_id) VALUES (7,2);
-INSERT INTO likes (post_id,user_id) VALUES (7,3);
+INSERT INTO comments (post_id, content, created_at,user_id) VALUES (1,'댓글',NOW(),1);
+INSERT INTO comments (post_id, content, created_at,user_id) VALUES (1,'댓글',NOW(),2);
+INSERT INTO comments (post_id, content, created_at,user_id) VALUES (1,'댓글',NOW(),2);
+INSERT INTO comments (post_id, content, created_at,user_id) VALUES (1,'댓글',NOW(),3);
+INSERT INTO comments (post_id, content, created_at,user_id) VALUES (1,'댓글',NOW(),3);
+INSERT INTO likes (post_id,user_id) VALUES (1,1);
+INSERT INTO likes (post_id,user_id) VALUES (1,2);
+INSERT INTO likes (post_id,user_id) VALUES (1,3);
 INSERT INTO category (name) VALUES('의류');
 INSERT INTO category (name) VALUES('전자제품');
 INSERT INTO category (name) VALUES('뷰티');
@@ -69,5 +64,11 @@ INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,categor
 INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('플립4','삼성','100만원',2,NOW(),NOW(),'내고 불가',2,5);
 INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('갤럭시 s21','삼성','80만원',1,NOW(),NOW(),'내고 불가',2,1);
 INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('갤럭시 폴드4','삼성','150만원',1,NOW(),NOW(),'내고 불가',2,7);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('테스트','삼성','150만원',1,NOW(),NOW(),'내고 불가',2,7);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('테스트','삼성','150만원',1,NOW(),NOW(),'내고 불가',2,7);
+INSERT INTO item(title,brand,price,user_id,created_at,updated_at,content,category_id,address_id) VALUES ('테스트','삼성','150만원',1,NOW(),NOW(),'내고 불가',2,7);
+
+INSERT INTO cart(item_id,user_id) VALUES (1,2);
+INSERT INTO cart(item_id,user_id) VALUES (2,2);
 
 
