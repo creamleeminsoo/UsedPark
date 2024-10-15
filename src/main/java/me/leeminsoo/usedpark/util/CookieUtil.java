@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.util.SerializationUtils;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -87,14 +88,27 @@ public class CookieUtil {
 
 
     public static String serialize(Object obj) {
-        return Base64.getUrlEncoder().encodeToString(SerializationUtils.serialize(obj));
+        try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+             ObjectOutputStream objectStream = new ObjectOutputStream(byteStream)) {
+
+            objectStream.writeObject(obj);
+            return Base64.getUrlEncoder().encodeToString(byteStream.toByteArray());
+
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to serialize object", e);
+        }
     }
 
     public static <T> T deserialize(Cookie cookie, Class<T> cls) {
-        return cls.cast(
-                SerializationUtils.deserialize(
-                        Base64.getUrlDecoder().decode(cookie.getValue())
-                )
-        );
+        try (ByteArrayInputStream byteStream = new ByteArrayInputStream(Base64.getUrlDecoder().decode(cookie.getValue()));
+             ObjectInputStream objectStream = new ObjectInputStream(byteStream)) {
+
+            Object obj = objectStream.readObject();
+            return cls.cast(obj);
+
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalArgumentException("Unable to deserialize object", e);
+        }
     }
+
 }
