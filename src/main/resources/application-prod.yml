@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        highlight_sql: false
+        generate_statistics: false
+        default_batch_fetch_size: 200
+        session.events.log.LOG_QUERIES_SLOWER_THAN_MS: 100
+    defer-datasource-initialization: false
+  h2:
+    console:
+      enabled: false

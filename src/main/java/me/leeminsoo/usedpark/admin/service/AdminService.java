@@ -20,7 +20,6 @@ import me.leeminsoo.usedpark.dto.item.ItemListResponseDTO;
 import me.leeminsoo.usedpark.repository.board.BoardRepository;
 import me.leeminsoo.usedpark.repository.board.CommentRepository;
 import me.leeminsoo.usedpark.repository.board.PostRepository;
-import me.leeminsoo.usedpark.repository.item.ItemImageRepository;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import me.leeminsoo.usedpark.repository.user.UserRepository;
 import org.springframework.dao.DataAccessException;
@@ -136,9 +135,9 @@ public class AdminService {
     public void deletePost(Long postId, User user){
         try {
             postRepository.deleteById(postId);
-            log.info("Post with ID {} was deleted by admin with user Email {}", postId, user.getEmail());
+            log.info("게시글 ID {} 가 관리자 {} 에 의해 삭제되었습니다.", postId, user.getNickname());
         }catch (EmptyResultDataAccessException e){
-            log.error("Error occurred while admin with user Email {} tried to delete post with ID {}", user.getEmail(), postId, e);
+            log.error("게시글 ID {} 가 관리자 {} 에 의해 삭제 시도중 에러가 발생했습니다.", user.getNickname(), postId, e);
             throw new PostNotFoundException();
         }
     }
@@ -146,9 +145,9 @@ public class AdminService {
     public void deleteUser(Long userId,User user) {
         try {
             userRepository.deleteById(userId);
-            log.info("User with ID {} was deleted by admin with user Email {}", userId, user.getEmail());
+            log.info("USER ID {} 가 관리자 {} 에 의해 삭제되었습니다.", userId, user.getNickname());
         }catch (EmptyResultDataAccessException e){
-            log.error("Error occurred while admin with user Email {} tried to delete user with ID {}", user.getEmail(), userId, e);
+            log.error("USER ID {} 가 관리자 {} 에 의해 삭제 시도중 에러가 발생했습니다.", user.getNickname(), userId, e);
             throw new UserNotFoundException();
         }
     }
@@ -156,9 +155,9 @@ public class AdminService {
     public void deleteItem(Long itemId,User user) {
         try{
             itemRepository.deleteById(itemId);
-            log.info("Item with ID {} was deleted by admin with user Email {}", itemId, user.getEmail());
+            log.info("Item ID {} 가 관리자 {} 에 의해 삭제되었습니다.", itemId, user.getNickname());
         }catch (EmptyResultDataAccessException e){
-            log.error("Error occurred while admin with user Email {} tried to delete item with ID {}", user.getEmail(), itemId, e);
+            log.error("Item ID {} 가 관리자 {} 에 의해 삭제 시도중 에러가 발생했습니다.", itemId, user.getNickname(), e);
             throw new ItemNotFoundException();
     }
     }

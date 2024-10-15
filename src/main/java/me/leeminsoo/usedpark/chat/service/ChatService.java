@@ -3,6 +3,7 @@ package me.leeminsoo.usedpark.chat.service;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.leeminsoo.usedpark.chat.domain.ChatMessage;
 import me.leeminsoo.usedpark.chat.domain.ChatRoom;
 import me.leeminsoo.usedpark.chat.dto.ChatMessageDTO;
@@ -15,8 +16,6 @@ import me.leeminsoo.usedpark.domain.item.Item;
 import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import me.leeminsoo.usedpark.repository.user.UserRepository;
-import org.hibernate.SessionFactory;
-import org.hibernate.stat.Statistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ChatService {
@@ -66,6 +65,8 @@ public class ChatService {
     public void deleteOldMessages(){
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1); // 일주일전 메시지
         chatMessageRepository.deleteBySendTimeBefore(oneWeekAgo);
+        log.info("오래된 메세지 삭제 (기준 날짜: {})", oneWeekAgo);
+
     }
 
     @Transactional
@@ -87,6 +88,7 @@ public class ChatService {
    }
    public List<ChatRoom> getChatRooms(Long userId){
         return chatRoomRepository.findByUserId(userId);
+
    }
 
    @Transactional

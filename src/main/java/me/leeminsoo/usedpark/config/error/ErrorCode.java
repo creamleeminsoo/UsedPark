@@ -9,6 +9,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED,"E2","잘못된 HTTP 메서드를 호출했습니다"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"E3","서버 에러가 발생했습니다"),
     NOT_FOUND(HttpStatus.NOT_FOUND,"E4","존재하지 않는 엔티티입니다"),
+    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST, "E5", "잘못된 인수입니다."),
     USER_NOT_AUTHENTICATION(HttpStatus.FORBIDDEN,"E5","인증되지 않았습니다"),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND,"A1","존재하지않는 글입니다"),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"A2","존재하지않는 댓글입니다"),

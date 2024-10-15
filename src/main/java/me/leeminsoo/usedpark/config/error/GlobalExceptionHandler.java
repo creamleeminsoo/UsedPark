@@ -12,13 +12,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handle(HttpRequestMethodNotSupportedException e){
-        log.error("HttpRequestMethodNotSupportedException", e);
+        log.warn("HttpRequestMethodNotSupportedException", e);
         return createErrorResponseEntity(ErrorCode.METHOD_NOT_ALLOWED);
     }
     @ExceptionHandler(BusinessBaseException.class)
     protected ResponseEntity<ErrorResponse> handle(BusinessBaseException e) {
-        log.error("BusinessException",e);
+        log.warn("BusinessException",e); // 비즈니스 로직관련예외는 WARN레벨로 설정해서 유지보수성을 높힘
         return createErrorResponseEntity(e.getErrorCode());
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<ErrorResponse> handle(IllegalArgumentException e) {
+        log.warn("IllegalArgumentException: {}", e.getMessage());
+        return createErrorResponseEntity(ErrorCode.INVALID_ARGUMENT);
     }
 
     @ExceptionHandler(Exception.class)

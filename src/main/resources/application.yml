@@ -1,25 +1,11 @@
 spring:
-  timezone=Asia/Seoul:
+  timezone: Asia/Seoul
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
-  jpa:
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: false
-        highlight_sql: true
-        generate_statistics: false
-        default_batch_fetch_size: 200
-        session.events.log.LOG_QUERIES_SLOWER_THAN_MS: 100
-    defer-datasource-initialization: false
-  datasource:
-    url: jdbc:h2:mem:testdb
-  h2:
-    console:
-      enabled: true
+
   security:
     oauth2:
       client:
@@ -30,7 +16,6 @@ spring:
             scope:
               - email
               - profile
-
 
           kakao:
             client-id: kakaoid
@@ -44,9 +29,7 @@ spring:
               - account_email
             client-name: Kakao
 
-
         provider:
-
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
@@ -68,7 +51,6 @@ cloud:
     credentials:
       access-key: access
       secret-key: secret
-
 
 logging:
   level:
