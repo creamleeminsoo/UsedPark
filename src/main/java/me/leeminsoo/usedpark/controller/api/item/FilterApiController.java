@@ -20,14 +20,14 @@ public class FilterApiController {
 
     @GetMapping("/api/categories")
     public ResponseEntity<List<Category>> getCategories() {
-        List<Category> categories = categoryService.getCategories();
+        List<Category> categories = categoryService.findCategories();
         return ResponseEntity.ok(categories);
 
     }
 
     @GetMapping("/api/addresses")
     public ResponseEntity<List<Address>> getAddresses() {
-        List<Address> addresses = addressService.getAddresses();
+        List<Address> addresses = addressService.findAddresses();
         return ResponseEntity.ok(addresses);
 
     }

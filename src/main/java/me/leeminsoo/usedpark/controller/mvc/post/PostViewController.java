@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.domain.board.Post;
 import me.leeminsoo.usedpark.dto.board.post.view.PostListViewResponseDTO;
 import me.leeminsoo.usedpark.dto.board.post.view.PostResponseDTO;
+import me.leeminsoo.usedpark.service.board.BoardService;
 import me.leeminsoo.usedpark.service.board.PostService;
 import me.leeminsoo.usedpark.util.CookieUtil;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PostViewController {
 
     private final PostService postService;
+    private final BoardService boardService;
 
 
 
@@ -50,7 +52,7 @@ public class PostViewController {
         if(!posts.isEmpty()) {
             boardName = posts.getContent().get(0).getBoardName();
         }else{
-            boardName = postService.findByBoardName(boardId);
+            boardName = boardService.findByBoardName(boardId);
         }
         model.addAttribute("posts",posts);
         model.addAttribute("currentPage", page);
@@ -71,7 +73,7 @@ public class PostViewController {
         if (postId == null) {
             model.addAttribute("post" , new PostResponseDTO());
         } else {
-            Post post = postService.findById(postId);
+            Post post = postService.findPost(postId);
             model.addAttribute("post",post);
         }
         model.addAttribute("boardId",boardId);

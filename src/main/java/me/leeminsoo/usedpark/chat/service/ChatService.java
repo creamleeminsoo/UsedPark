@@ -11,11 +11,10 @@ import me.leeminsoo.usedpark.chat.dto.ChatRoomRequest;
 import me.leeminsoo.usedpark.chat.repository.ChatMessageRepository;
 import me.leeminsoo.usedpark.chat.repository.ChatRoomRepository;
 import me.leeminsoo.usedpark.config.error.exception.notpound.ChatRoomNotFoundException;
-import me.leeminsoo.usedpark.config.error.exception.notpound.ItemNotFoundException;
 import me.leeminsoo.usedpark.domain.item.Item;
 import me.leeminsoo.usedpark.domain.user.User;
-import me.leeminsoo.usedpark.repository.item.ItemRepository;
-import me.leeminsoo.usedpark.repository.user.UserRepository;
+import me.leeminsoo.usedpark.service.item.ItemService;
+import me.leeminsoo.usedpark.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -30,8 +29,8 @@ import java.util.Map;
 public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
+    private final UserService userService;
+    private final ItemService itemService;
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
@@ -43,12 +42,12 @@ public class ChatService {
         Long buyerId = request.getBuyerId();
         Long sellerId = request.getSellerId();
         Long itemId = request.getItemId();
-        Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
+        Item item = itemService.findItem(itemId);
 
         ChatRoom room = chatRoomRepository.findByBuyerIdAndSellerIdAndItemId(buyerId, sellerId, itemId);
 
         if (room == null) {
-            List<User> users = userRepository.findAllById(List.of(buyerId, sellerId));
+            List<User> users = userService.findAllById(List.of(buyerId, sellerId));
             if (users.size() != 2) {
                 throw new IllegalArgumentException("자신과 채팅할수없습니다");
             }

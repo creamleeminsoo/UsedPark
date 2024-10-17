@@ -14,6 +14,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -39,8 +41,11 @@ public class UserService {
                 .build());
     }
 
-    public User findByUser(String email){
+    public User findUser(String email){
         return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+    }
+    public List<User> findAllById(List<Long> usersId){
+        return userRepository.findAllById(usersId);
     }
 
     @Transactional

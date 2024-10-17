@@ -2,7 +2,6 @@ package me.leeminsoo.usedpark.service.alarm;
 
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.repository.alarm.EmitterRepository;
-import me.leeminsoo.usedpark.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -12,7 +11,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AlarmService {
 
-    private final UserRepository userRepository;
     private final EmitterRepository emitterRepository;
     private static final Long TIMEOUT = 600L * 1000 * 60; //600분
 

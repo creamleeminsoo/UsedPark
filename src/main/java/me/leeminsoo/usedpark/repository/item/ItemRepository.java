@@ -11,8 +11,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    Page<Item> findByTitleContaining(String keyword,Pageable pageable);
     long count();
+
     @Query("SELECT new me.leeminsoo.usedpark.dto.item.ItemListResponseDTO(i, size(i.carts), img) " +
             "FROM Item i " +
             "JOIN FETCH i.category c " +
@@ -64,8 +64,30 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     )
     Page<ItemListResponseDTO> findAllWithRepresentativeImageByUserId(@Param("userId") Long userId, Pageable pageable);
 
-    @Query("SELECT i FROM Item i WHERE i.user.nickname LIKE %:nickname%")
-    Page<Item> findByUserNicknameContaining(String nickname, Pageable pageable);
+    @Query(value = "SELECT new me.leeminsoo.usedpark.dto.item.ItemListResponseDTO(i, size(i.carts), img) " +
+            "FROM Item i " +
+            "JOIN FETCH i.category c " +
+            "JOIN FETCH i.address a " +
+            "LEFT JOIN i.images img " +
+            "WHERE (img.isRepresentative = true OR img IS NULL) " +
+            "AND i.title LIKE %:keyword%",
+            countQuery = "SELECT COUNT(i) FROM Item i " +
+                    "WHERE i.title LIKE %:keyword%"
+    )
+    Page<ItemListResponseDTO> findByTitleContaining(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query(value = "SELECT new me.leeminsoo.usedpark.dto.item.ItemListResponseDTO(i, size(i.carts), img) " +
+            "FROM Item i " +
+            "JOIN FETCH i.user u " +
+            "LEFT JOIN i.images img " +
+            "WHERE (img.isRepresentative = true OR img IS NULL) " +
+            "AND u.nickname LIKE %:nickname%",
+            countQuery = "SELECT COUNT(i) FROM Item i " +
+                    "JOIN i.user u " +
+                    "WHERE u.nickname LIKE %:nickname%"
+    )
+    Page<ItemListResponseDTO> findByUserNicknameContaining(@Param("nickname") String nickname, Pageable pageable);
+
 
 
 }

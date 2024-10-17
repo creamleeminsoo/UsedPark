@@ -3,7 +3,6 @@ package me.leeminsoo.usedpark.service.board;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.error.exception.notpound.CommentNotFoundException;
-import me.leeminsoo.usedpark.config.error.exception.notpound.PostNotFoundException;
 import me.leeminsoo.usedpark.domain.board.Comment;
 import me.leeminsoo.usedpark.domain.board.Post;
 import me.leeminsoo.usedpark.domain.user.User;
@@ -11,27 +10,25 @@ import me.leeminsoo.usedpark.dto.alarm.CommentAlarmDTO;
 import me.leeminsoo.usedpark.dto.board.comment.AddCommentRequestDTO;
 import me.leeminsoo.usedpark.dto.board.comment.UpdateCommentDTO;
 import me.leeminsoo.usedpark.repository.board.CommentRepository;
-import me.leeminsoo.usedpark.repository.board.PostRepository;
 import me.leeminsoo.usedpark.service.alarm.AlarmService;
-import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final PostService postService;
     private final AlarmService alarmService;
 
-    public Comment findByComment(Long commentId) {
+    public Comment findComment(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
     }
 
     public Comment saveComment(AddCommentRequestDTO dto,Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Post post = postService.findPost(postId);
         Comment comment = Comment.builder().content(dto.getContent()).post(post).user(dto.getUser()).build();
         CommentAlarmDTO alarmDTO = CommentAlarmDTO.builder().postId(postId).createdAt(LocalDateTime.now()).boardId(post.getBoard().getId()).build();
         alarmService.customAlarm(post.getUser().getId(),alarmDTO,"작성하신 글에 댓글이 달렸습니다.","comment");
@@ -52,8 +49,5 @@ public class CommentService {
             comment.update(dto.getContent());
         }else throw new AccessDeniedException("권한이 없습니다");
         return comment;
-    }
-    public List<Comment> getComments() {
-        return commentRepository.findAll();
     }
 }

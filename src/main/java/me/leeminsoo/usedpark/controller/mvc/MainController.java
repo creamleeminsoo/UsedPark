@@ -23,7 +23,7 @@ public class MainController {
     @GetMapping("/")
     public String mainPage(Model model) {
 
-        List<Board> boards = boardService.getBoards();
+        List<Board> boards = boardService.findBoards();
         List<ItemListResponseDTO> items = itemService.getRecentItems();
         List<PopularPostsResponseDTO> posts = postService.getPopularPosts();
 

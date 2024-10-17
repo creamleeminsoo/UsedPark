@@ -26,27 +26,12 @@ public class PostApiController {
     private final BoardService boardService;
     Map<String, Object> response;
 
-    @GetMapping("/api/posts")
-    public ResponseEntity<List<PostListResponseDTO>> getPosts() {
-        List<PostListResponseDTO> posts = postService.findAll().stream()
-                .map(PostListResponseDTO::new)
-                .toList();
-        return ResponseEntity.ok()
-                .body(posts);
-    }
-    @GetMapping("/api/posts/{postId}")
-    public ResponseEntity<PostListResponseDTO> getPost(@PathVariable(name = "postId") Long postId){
-        Post post = postService.findById(postId);
-
-        return ResponseEntity.ok()
-                .body(new PostListResponseDTO(post));
-    }
     @PostMapping("/api/posts")
     public ResponseEntity<Map<String, Object>> addPost(@RequestPart("post") @Validated AddPostRequestDTO dto,
                                                         @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles,
                                                         @RequestParam(name = "boardId") Long boardId, @AuthenticationPrincipal User user) {
 
-        dto.setBoard(boardService.getBoard(boardId));
+        dto.setBoard(boardService.findBoard(boardId));
         dto.setUser(user);
         Post post = postService.save(dto,imageFiles);
         response = new HashMap<>();

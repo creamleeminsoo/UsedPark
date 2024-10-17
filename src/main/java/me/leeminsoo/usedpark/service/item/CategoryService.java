@@ -13,7 +13,10 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<Category> getCategories(){
+    public List<Category> findCategories(){
         return categoryRepository.findAll();
+    }
+    public Category findCategory(Long categoryId){
+       return categoryRepository.findById(categoryId).orElseThrow(() -> new IllegalArgumentException("찾을수없는 카테고리입니다"));
     }
 }

@@ -8,25 +8,21 @@ import me.leeminsoo.usedpark.config.error.exception.notpound.CartNotFoundExcepti
 import me.leeminsoo.usedpark.config.error.exception.notpound.PostNotFoundException;
 import me.leeminsoo.usedpark.domain.item.Cart;
 import me.leeminsoo.usedpark.domain.item.Item;
-import me.leeminsoo.usedpark.domain.item.ItemImage;
 import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.dto.item.ItemListResponseDTO;
 import me.leeminsoo.usedpark.repository.item.CartRepository;
-import me.leeminsoo.usedpark.repository.item.ItemImageRepository;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
     private final ItemRepository itemRepository;
-    private final ItemImageRepository itemImageRepository;
 
     @Transactional
     public int addCart(User user, Long itemId){

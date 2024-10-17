@@ -13,11 +13,16 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
 
-    public Board getBoard(Long board) {
+    public Board findBoard(Long board) {
         return boardRepository.findById(board).orElseThrow(BoardNotFoundException::new);
     }
-    public List<Board> getBoards(){
+    public List<Board> findBoards(){
         return boardRepository.findAll();
+    }
+
+    public String findByBoardName(Long boardId){
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
+        return board.getName();
     }
 
 }

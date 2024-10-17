@@ -15,7 +15,7 @@ public class CommentViewController {
 
     @GetMapping("/update-comment/{commentId}")
     public String updateComment(@PathVariable(name = "commentId")Long commentId, Model model) {
-        Comment comment = commentService.findByComment(commentId);
+        Comment comment = commentService.findComment(commentId);
         model.addAttribute("comment",comment);
         return "post/update-comment";
 

@@ -5,15 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.leeminsoo.usedpark.admin.dto.AddBoardRequestDTO;
 import me.leeminsoo.usedpark.admin.dto.AdminViewResponseDTO;
-
 import me.leeminsoo.usedpark.admin.dto.UserListViewResponseDTO;
 import me.leeminsoo.usedpark.config.error.exception.notpound.ItemNotFoundException;
 import me.leeminsoo.usedpark.config.error.exception.notpound.PostNotFoundException;
 import me.leeminsoo.usedpark.config.error.exception.notpound.UserNotFoundException;
 import me.leeminsoo.usedpark.domain.board.Board;
 import me.leeminsoo.usedpark.domain.board.Post;
-import me.leeminsoo.usedpark.domain.item.Item;
-import me.leeminsoo.usedpark.domain.item.ItemImage;
 import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.dto.board.post.view.PostListViewResponseDTO;
 import me.leeminsoo.usedpark.dto.item.ItemListResponseDTO;
@@ -111,20 +108,11 @@ public class AdminService {
     }
     public Page<ItemListResponseDTO> searchItems(String order,int page,int size,String keyword,String type){
         Pageable pageable = setPageable(order,page,size);
-        Page<Item> items;
         if ("nickname".equals(type)){
-            items = itemRepository.findByUserNicknameContaining(keyword,pageable);
+            return itemRepository.findByUserNicknameContaining(keyword,pageable);
         }else {
-            items = itemRepository.findByTitleContaining(keyword,pageable);
+            return itemRepository.findByTitleContaining(keyword,pageable);
         }
-        return items.map(item -> {
-            int cartCount = item.getCarts().size();
-            ItemImage representativeImage = item.getImages().stream()
-                    .filter(ItemImage::isRepresentative)
-                    .findFirst()
-                    .orElse(null);
-            return new ItemListResponseDTO(item,cartCount,representativeImage);
-        });
     }
 
 

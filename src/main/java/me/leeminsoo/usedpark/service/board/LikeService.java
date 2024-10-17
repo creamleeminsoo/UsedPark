@@ -4,12 +4,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.error.exception.InvalidInput.LikeDuplicationException;
 import me.leeminsoo.usedpark.config.error.exception.UserNotAuthenticationException;
-import me.leeminsoo.usedpark.config.error.exception.notpound.PostNotFoundException;
 import me.leeminsoo.usedpark.domain.board.Post;
 import me.leeminsoo.usedpark.domain.user.User;
 import me.leeminsoo.usedpark.dto.alarm.LikeAlarmDTO;
 import me.leeminsoo.usedpark.repository.board.LikeRepository;
-import me.leeminsoo.usedpark.repository.board.PostRepository;
 import me.leeminsoo.usedpark.service.alarm.AlarmService;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,7 @@ import java.time.LocalDateTime;
 @Service
 public class LikeService {
     private final LikeRepository likeRepository;
-    private final PostRepository postRepository;
+    private final PostService postService;
     private final AlarmService alarmService;
 
 
@@ -28,7 +26,7 @@ public class LikeService {
         if (user == null){
             throw new UserNotAuthenticationException();
         }
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        Post post = postService.findPost(postId);
 
         if (!likeRepository.existsByPostAndUser(post,user)) {
             likeRepository.addLike(postId,user.getId());

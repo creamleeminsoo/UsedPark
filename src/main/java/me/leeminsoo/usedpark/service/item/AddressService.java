@@ -13,7 +13,10 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
 
-    public List<Address> getAddresses(){
+    public List<Address> findAddresses(){
         return addressRepository.findAll();
+    }
+    public Address findAddress(Long addressId){
+        return addressRepository.findById(addressId).orElseThrow(() -> new IllegalArgumentException("찾을수 없는 주소입니다"));
     }
 }

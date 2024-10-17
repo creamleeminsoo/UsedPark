@@ -53,7 +53,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }else {
             throw new AccessDeniedException("유효 하지 않는 사용자입니다.");
         }
-        User user = userService.findByUser(email);
+        User user = userService.findUser(email);
 
         String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
         saveRefreshToken(user, refreshToken);
