@@ -133,17 +133,23 @@
 > **상품 리스트 화면**
 
 <br>
-<img src="https://github.com/user-attachments/assets/a1f81cef-efce-42f4-8bc2-74d79ebe6848" width="700">
+<a href="https://github.com/user-attachments/assets/a1f81cef-efce-42f4-8bc2-74d79ebe6848" target="_blank">
+  <img src="https://github.com/user-attachments/assets/a1f81cef-efce-42f4-8bc2-74d79ebe6848" width="700">
+</a>
 
 > **채팅 화면**
 
 <br>
-<img src="https://github.com/user-attachments/assets/0d433884-f409-4e41-9ff8-8e949b7fb426" width="400">
+<a href="https://github.com/user-attachments/assets/0d433884-f409-4e41-9ff8-8e949b7fb426" target="_blank">
+  <img src="https://github.com/user-attachments/assets/0d433884-f409-4e41-9ff8-8e949b7fb426" width="400">
+</a>
 
 > **알람 화면**
 
 <br>
-<img src="https://github.com/user-attachments/assets/a59f3161-dd37-4bcd-9460-8ddab3c9b276" width="700">
+<a href="https://github.com/user-attachments/assets/a59f3161-dd37-4bcd-9460-8ddab3c9b276" target="_blank">
+  <img src="https://github.com/user-attachments/assets/a59f3161-dd37-4bcd-9460-8ddab3c9b276" width="700">
+</a>
 
 > **게시글 화면**
 
