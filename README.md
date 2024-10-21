@@ -3,6 +3,18 @@
 
 중고거래 플랫폼 프로젝트
 
+
+## 목차
+- [프로젝트 소개](#gift-프로젝트-소개)
+- [기능](#mag-기능)
+- [ERD](#erd)
+- [UI](#eye-ui)
+- [개발 환경](#low_brightness-개발-환경)
+- [사용한 도구](#wrench-사용한-도구)
+
+
+
+
 ## :gift: 프로젝트 소개
 
 
@@ -16,13 +28,6 @@
 
 채팅 메시지 또는 좋아요를 받으면 즉시 알림을 받아볼 수 있습니다.
 
-## 목차
-- [프로젝트 소개](#gift-프로젝트-소개)
-- [기능](#mag-기능)
-- [ERD](#erd)
-- [UI](#eye-ui)
-- [개발 환경](#low_brightness-개발-환경)
-- [사용한 도구](#wrench-사용한-도구)
 
 ## :mag: 기능
 
@@ -120,7 +125,10 @@
 
 
 
-<img src="https://github.com/user-attachments/assets/1c6d976c-5dba-42a4-89a1-cabecd186946" width="700">
+<a href="https://github.com/user-attachments/assets/1c6d976c-5dba-42a4-89a1-cabecd186946" target="_blank">
+  <img src="https://github.com/user-attachments/assets/1c6d976c-5dba-42a4-89a1-cabecd186946" width="700">
+</a>
+
 
 > **상품 리스트 화면**
 
