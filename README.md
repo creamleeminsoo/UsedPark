@@ -9,6 +9,8 @@
 - [기능](#mag-기능)
 - [ERD](#erd)
 - [UI](#eye-ui)
+- [개발 내용](#개발-내용)
+- [성능 최적화 및 문제점 해결](#성능-최적화-및-문제점-해결)
 - [개발 환경](#low_brightness-개발-환경)
 - [사용한 도구](#wrench-사용한-도구)
 
@@ -116,6 +118,8 @@
  
   
   - OAuth2를 이용한 구글, 카카오 소셜 로그인 지원
+ 
+
 
 ## ERD
 
@@ -152,6 +156,21 @@
 </a>
 
 > **게시글 화면**
+
+
+## :computer: 개발 내용
+
+- [로깅 프레임워크를 사용해 로그 최적화](https://github.com/creamleeminsoo/UsedPark/wiki/%EB%A1%9C%EA%B9%85-%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4--%EB%A1%9C%EA%B7%B8-%EC%B5%9C%EC%A0%81%ED%99%94)
+- [알람 기능 구현](https://github.com/creamleeminsoo/UsedPark/wiki/%EC%95%8C%EB%9E%8C-%EA%B8%B0%EB%8A%A5%EA%B5%AC%ED%98%84)
+
+
+## :scissors: 성능 최적화 및 문제점 해결
+
+- [N+1 문제 해결 (Batch Size)](https://github.com/creamleeminsoo/UsedPark/wiki/N-1%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0-(Batch-Size))
+- [N+1 문제 해결 (Fetch Join)](https://github.com/creamleeminsoo/UsedPark/wiki/N-1%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0(FetchJoin))
+- [N+1 문제 해결 (One-To-One 관계)](https://github.com/creamleeminsoo/UsedPark/wiki/N-1%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0(One-To-One-%EA%B4%80%EA%B3%84))
+- [Proxy 객체를 사용해 쿼리횟수 줄이기](https://github.com/creamleeminsoo/UsedPark/wiki/Proxy%EA%B0%9D%EC%B2%B4%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4-%EC%BF%BC%EB%A6%AC%ED%9A%9F%EC%88%98-%EC%A4%84%EC%9D%B4%EA%B8%B0)
+
 
 
 
