@@ -169,9 +169,38 @@
 
 ## :scissors: 성능 최적화 및 문제점 해결
 
+저는 N+1문제가 발생할수 있는 상황을 크게 3가지로 나눠 고민해봤습니다.
+
+1, 즉시로딩(Eager Loading) 인 상황
+2, 지연로딩(Lazy Loading) 인 상황
+3, 일대일(OneToOne)관계일때 
+
+**특히 즉시 로딩과 지연 로딩의 경우, 엔티티 간 연관 관계 설정에 따라 상황이 달라지므로, 세부 기준을 나누어 해결책을 마련했습니다.**
+
+**1, 즉시로딩(Eager Loading) 인 상황** 
+- ManyToOne (다대일) 관계   ->  `Fetch Join 사용하여 문제 해결`
+- OneToMany(일대다) 관계
+  </br>
+       `1) Paging 적용 되어 있는 경우  ->  BatchSize , DTO로 맵핑 해서 문제해결`
+        </br>`2) Paging 적용 안되어 있는 경우  ->  연관된 엔티티 하나만 FetchJoin 후 BatchSize를 통해 문제해결`
+</br>
+
+**2, 지연로딩(Lazy Loading) 인 상황**
+- `BatchSize로 문제 해결`
+  
+</br>
+
+**3, 일대일(OneToOne)관계 일떄**
+- `양방향  ->  단방향으로 해결`
+
+**문제 해결 과정**
 - [N+1 문제 해결 (Batch Size)](https://github.com/creamleeminsoo/UsedPark/wiki/N-1%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0-(Batch-Size))
 - [N+1 문제 해결 (Fetch Join)](https://github.com/creamleeminsoo/UsedPark/wiki/N-1%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0(FetchJoin))
 - [N+1 문제 해결 (One-To-One 관계)](https://github.com/creamleeminsoo/UsedPark/wiki/N-1%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0(One-To-One-%EA%B4%80%EA%B3%84))
+</br>
+
+**성능 최적화 과정**
+  
 - [Proxy 객체를 사용해 쿼리횟수 줄이기](https://github.com/creamleeminsoo/UsedPark/wiki/Proxy%EA%B0%9D%EC%B2%B4%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4-%EC%BF%BC%EB%A6%AC%ED%9A%9F%EC%88%98-%EC%A4%84%EC%9D%B4%EA%B8%B0)
 
 
