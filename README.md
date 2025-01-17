@@ -109,7 +109,7 @@
 
 ## 📘 문제 해결 과정
 
-**JPA N+1 문제 해결 과정**
+ ### jpa-n1-문제-해결-과정
 
 
  - [Batch Size 를 통한 해결](https://github.com/creamleeminsoo/UsedPark/wiki/N-1%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0-(Batch-Size))
@@ -121,17 +121,17 @@
  - [OneToOne 관계 N+1 해결](https://github.com/creamleeminsoo/UsedPark/wiki/N-1%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0(One-To-One-%EA%B4%80%EA%B3%84))
 
 
-**Proxy 객체를 활용해 쿼리 횟수 줄이기**
+ ### proxy-객체를-활용해-쿼리-횟수-줄이기
  - [채팅 이벤트 쿼리 횟수 2회에서 1회 감소](https://github.com/creamleeminsoo/UsedPark/wiki/Proxy%EA%B0%9D%EC%B2%B4%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4-%EC%BF%BC%EB%A6%AC%ED%9A%9F%EC%88%98-%EC%A4%84%EC%9D%B4%EA%B8%B0)
 
 
 
-**로깅 프레임워크를 사용해 로그 최적화**
+ ### 로깅-프레임워크를-사용해-로그-최적화
  - [운영 환경에서 로그 최적화](https://github.com/creamleeminsoo/UsedPark/wiki/%EB%A1%9C%EA%B9%85-%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%B4--%EB%A1%9C%EA%B7%B8-%EC%B5%9C%EC%A0%81%ED%99%94)
 
 
 
-**비동기 처리와 복합 인덱스를 활용한 최적화**
+ ### 비동기-처리와-복합-인덱스를-활용한-최적화
  - [좋아요 기능 최적화](https://github.com/creamleeminsoo/UsedPark/wiki/%EC%A2%8B%EC%95%84%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EA%B0%9C%EC%84%A0(%EB%B9%84%EB%8F%99%EA%B8%B0,-%EB%B3%B5%ED%95%A9-%EC%9D%B8%EB%8D%B1%EC%8A%A4))
 
 
