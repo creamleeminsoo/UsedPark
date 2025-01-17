@@ -68,6 +68,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role roles;
 
+
     public User(String email){
         this.email = email;
     }

@@ -82,6 +82,10 @@ public class ChatService {
         return dto;
     }
 
+
+
+
+
    public ChatRoom getRoomById(Long roomId){
         return chatRoomRepository.findById(roomId).orElseThrow(ChatRoomNotFoundException::new);
    }

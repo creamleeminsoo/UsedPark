@@ -1,5 +1,7 @@
 package me.leeminsoo.usedpark.service.item;
 
+
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.leeminsoo.usedpark.config.error.exception.notpound.ItemNotFoundException;
@@ -12,7 +14,11 @@ import me.leeminsoo.usedpark.dto.item.AddItemRequestDTO;
 import me.leeminsoo.usedpark.dto.item.ItemListResponseDTO;
 import me.leeminsoo.usedpark.dto.item.ItemResponseDTO;
 import me.leeminsoo.usedpark.dto.item.UpdateItemRequestDTO;
+import me.leeminsoo.usedpark.repository.item.ItemImageRepository;
 import me.leeminsoo.usedpark.repository.item.ItemRepository;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +37,10 @@ public class ItemService {
     private final CategoryService categoryService;
     private final AddressService addressService;
     private final ItemImageService itemImageService;
+    private final ItemImageRepository itemImageRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
 
 
@@ -80,6 +90,11 @@ public class ItemService {
     }
 
     public Page<ItemListResponseDTO> getItems(String order, int page, int size, Long addressId, Long categoryId) {
+        SessionFactory sessionFactory = entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+        Statistics statistics = sessionFactory.getStatistics();
+        statistics.clear();
+        System.out.println("******상품 리스트를 조회할때 쿼리 ******");
+
         Pageable pageable = setPageable(order, page, size);
         Page<ItemListResponseDTO> items;
         if (addressId != null) {
@@ -89,9 +104,12 @@ public class ItemService {
         } else {
             items = itemRepository.findAllWithRepresentativeImage(pageable);
         }
+
+        long queryCount = statistics.getPrepareStatementCount();
+        System.out.println("상품리스트를 조회할시 쿼리" + queryCount);
+
         return items;
     }
-
 
     public Page<ItemListResponseDTO> searchItems(String order,int page, int size, String keyword){
         Pageable pageable = setPageable(order,page,size);
