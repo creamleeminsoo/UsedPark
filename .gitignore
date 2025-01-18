@@ -15,6 +15,7 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+/src/main/resources/application.yml
 
 ### Eclipse ###
 .apt_generated
@@ -41,5 +42,3 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-# Ignore application.yml file
-application.yml
